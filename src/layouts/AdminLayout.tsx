@@ -50,6 +50,13 @@ export default function AdminLayout() {
                 <line x1="7" y1="7" x2="7.01" y2="7" />
               </svg>
             </NavLink>
+            <NavLink to="/admin/banner" className="admin-header-icon" title="Banner de inicio">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <circle cx="8.5" cy="10" r="1.5" />
+                <path d="m21 16-5-5-9 9" />
+              </svg>
+            </NavLink>
 
             <span className="admin-header-separator" />
 

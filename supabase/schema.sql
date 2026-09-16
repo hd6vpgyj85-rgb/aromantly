@@ -600,6 +600,33 @@ create policy "product_images_insert_public" on storage.objects
   with check (bucket_id = 'product-images' and (storage.foldername(name))[1] = 'reviews');
 
 -- ───────────────────────────────────────────────────────────────────
+-- BANNER DE INICIO: imágenes editables desde el admin para la sección
+-- promocional del home. Tabla singleton (una sola fila).
+-- ───────────────────────────────────────────────────────────────────
+create table if not exists home_banner (
+  id boolean primary key default true check (id),
+  images text[] not null default '{}',
+  updated_at timestamptz not null default now()
+);
+
+insert into home_banner (id) values (true) on conflict (id) do nothing;
+
+alter table home_banner enable row level security;
+
+drop policy if exists "home_banner_select_public" on home_banner;
+create policy "home_banner_select_public" on home_banner
+  for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists "home_banner_update_authenticated" on home_banner;
+create policy "home_banner_update_authenticated" on home_banner
+  for update
+  to authenticated
+  using (true)
+  with check (true);
+
+-- ───────────────────────────────────────────────────────────────────
 -- DATOS INICIALES: niveles del programa de fidelidad
 -- ───────────────────────────────────────────────────────────────────
 insert into loyalty_tiers (purchases_required, reward_description, discount_percent)

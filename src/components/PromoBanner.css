@@ -23,3 +23,60 @@
     aspect-ratio: 21 / 9;
   }
 }
+
+.promo-banner-carousel-wrapper {
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-banner-carousel-wrapper:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.promo-banner-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.promo-banner-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.promo-banner-carousel img {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.promo-banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 7px;
+  z-index: 2;
+}
+
+.promo-banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 0;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease,
+    border-radius 0.3s ease;
+}
+
+.promo-banner-dot-active {
+  background: var(--color-accent);
+  width: 20px;
+  border-radius: 4px;
+}

@@ -34,6 +34,7 @@ import ReviewsPage from "./pages/admin/ReviewsPage";
 import CouponsPage from "./pages/admin/CouponsPage";
 import CouponFormPage from "./pages/admin/CouponFormPage";
 import CustomersPage from "./pages/admin/CustomersPage";
+import HomeBannerPage from "./pages/admin/HomeBannerPage";
 
 export default function App() {
   return (
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="cupones" element={<CouponsPage />} />
           <Route path="cupones/nuevo" element={<CouponFormPage />} />
           <Route path="clientes" element={<CustomersPage />} />
+          <Route path="banner" element={<HomeBannerPage />} />
         </Route>
 
         <Route element={<CategoryLayout />}>
