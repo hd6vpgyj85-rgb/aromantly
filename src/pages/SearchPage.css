@@ -1,5 +1,6 @@
 .search-page {
-  padding: 32px 0 60px;
+  padding-top: 32px;
+  padding-bottom: 60px;
 }
 
 .search-page h1 {

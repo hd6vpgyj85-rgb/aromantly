@@ -1,5 +1,6 @@
 .checkout-page {
-  padding: 28px 0 60px;
+  padding-top: 28px;
+  padding-bottom: 60px;
   max-width: 640px;
 }
 
@@ -106,7 +107,8 @@ textarea {
 }
 
 .checkout-success {
-  padding: 60px 0;
+  padding-top: 60px;
+  padding-bottom: 60px;
   text-align: center;
   max-width: 480px;
 }
