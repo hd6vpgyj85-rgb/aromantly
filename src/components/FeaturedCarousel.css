@@ -16,7 +16,9 @@
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  scroll-snap-type: x proximity;
+  /* "mandatory" (no "proximity") obliga a que el scroll siempre termine
+     en un producto exacto en vez de quedar libre. */
+  scroll-snap-type: x mandatory;
   /* Padding lateral amplio para que ningún thumbnail quede debajo de las
      flechas: si no, el gesto de swipe empieza sobre el botón y nunca
      llega a moverse el track (no se podía deslizar hasta el último). */
@@ -31,6 +33,10 @@
 .featured-carousel-item {
   flex: 0 0 auto;
   scroll-snap-align: center;
+  /* Sin esto, un arrastre fuerte (mouse/trackpad en escritorio) saltaba
+     de largo sobre todos los productos intermedios hasta el inicio o el
+     final. "always" obliga a detenerse en cada uno, uno a la vez. */
+  scroll-snap-stop: always;
   background: none;
   border: none;
   padding: 0;
