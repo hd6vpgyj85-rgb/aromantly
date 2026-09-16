@@ -32,8 +32,16 @@
 .product-detail-price {
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin: 8px 0 20px;
+}
+
+/* .product-badge está pensado como overlay absoluto sobre una imagen
+   (ProductCard); aquí se usa como texto normal dentro del flex de precio. */
+.product-detail-price .product-badge {
+  position: static;
+  flex: 0 0 auto;
 }
 
 .product-detail-price-old {

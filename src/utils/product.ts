@@ -57,3 +57,16 @@ export function buildAutoDescription(product: Product): string {
 export function getDisplayDescription(product: Product): string {
   return product.description?.trim() ? product.description : buildAutoDescription(product);
 }
+
+/**
+ * Detecta la marca de un producto a partir de la primera palabra de su
+ * nombre (ej. "Armaf Club de Nuit" → "Armaf"). Se usa para armar los
+ * chips de filtro por marca, en vez del campo "brand" capturado a mano
+ * en el admin, que puede tener errores de dedo o mayúsculas
+ * inconsistentes ("ARMARF", "armaf", etc.).
+ */
+export function extractBrandFromName(name: string): string {
+  const firstWord = name.trim().split(/\s+/)[0] ?? "";
+  if (!firstWord) return "";
+  return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
+}

@@ -8,7 +8,7 @@ export default function EauDeColognePage() {
         tagline: "El toque cítrico y fresco de siempre.",
         subtitle: "Concentración ligera, perfecta para climas cálidos.",
         baseFilter: (p) => p.category === "eau de cologne",
-        filterType: "marca",
+        filterTypes: ["marca"],
       }}
     />
   );

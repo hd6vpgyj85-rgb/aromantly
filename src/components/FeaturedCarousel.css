@@ -17,7 +17,10 @@
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 10px 20px 20px;
+  /* Padding lateral amplio para que ningún thumbnail quede debajo de las
+     flechas: si no, el gesto de swipe empieza sobre el botón y nunca
+     llega a moverse el track (no se podía deslizar hasta el último). */
+  padding: 10px 54px 20px;
   scrollbar-width: none;
 }
 

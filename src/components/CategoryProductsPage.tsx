@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import type { ActiveFilter, Product, ProductLevel } from "../types";
+import type { Product, ProductLevel } from "../types";
 import { useProducts } from "../contexts/ProductsContext";
 import { LEVEL_OPTIONS } from "../data/store";
+import { extractBrandFromName } from "../utils/product";
 import CategoryPhotoBanner from "./CategoryPhotoBanner";
 import CategoryHero from "./CategoryHero";
 import ProductFilters from "./ProductFilters";
@@ -17,7 +18,8 @@ export interface CategoryPageConfig {
   subtitle: string;
   bannerImage?: string;
   baseFilter: (product: Product) => boolean;
-  filterType: "nivel" | "marca";
+  /** Qué filtros mostrar, cada uno en su propia fila, combinados con Y. */
+  filterTypes: ("nivel" | "marca")[];
 }
 
 export default function CategoryProductsPage({ config }: { config: CategoryPageConfig }) {
@@ -26,37 +28,36 @@ export default function CategoryProductsPage({ config }: { config: CategoryPageC
 
   const baseProducts = useMemo(() => products.filter(config.baseFilter), [products, config]);
 
-  const initialFilter: ActiveFilter = useMemo(() => {
-    if (config.filterType === "nivel") {
-      const nivel = searchParams.get("nivel");
-      if (nivel) return { type: "nivel", value: nivel as ProductLevel };
-    } else {
-      const marca = searchParams.get("marca");
-      if (marca) return { type: "marca", value: marca };
-    }
-    return null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const showNivel = config.filterTypes.includes("nivel");
+  const showMarca = config.filterTypes.includes("marca");
 
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>(initialFilter);
+  const [nivelFilter, setNivelFilter] = useState<ProductLevel | null>(() => {
+    const nivel = searchParams.get("nivel");
+    return nivel ? (nivel as ProductLevel) : null;
+  });
+  const [marcaFilter, setMarcaFilter] = useState<string | null>(() => searchParams.get("marca"));
 
-  const filterOptions = useMemo(() => {
-    if (config.filterType === "nivel") {
-      return LEVEL_OPTIONS.map((opt) => ({ type: "nivel" as const, value: opt.slug, label: opt.label }));
-    }
-    const brands = Array.from(new Set(baseProducts.map((p) => p.brand))).sort((a, b) =>
-      a.localeCompare(b)
-    );
+  const nivelOptions = useMemo(
+    () => LEVEL_OPTIONS.map((opt) => ({ type: "nivel" as const, value: opt.slug, label: opt.label })),
+    []
+  );
+
+  const marcaOptions = useMemo(() => {
+    // La marca se detecta de la primera palabra del nombre del producto
+    // (ej. "Armaf Club de Nuit" → "Armaf"), no del campo "marca" del admin,
+    // que puede tener errores de dedo o mayúsculas inconsistentes.
+    const brands = Array.from(new Set(baseProducts.map((p) => extractBrandFromName(p.name)).filter(Boolean)));
+    brands.sort((a, b) => a.localeCompare(b));
     return brands.map((brand) => ({ type: "marca" as const, value: brand, label: brand }));
-  }, [config.filterType, baseProducts]);
+  }, [baseProducts]);
 
   const filteredProducts = useMemo(() => {
-    if (!activeFilter) return baseProducts;
-    if (activeFilter.type === "nivel") {
-      return baseProducts.filter((p) => p.levels?.includes(activeFilter.value as ProductLevel));
-    }
-    return baseProducts.filter((p) => p.brand === activeFilter.value);
-  }, [baseProducts, activeFilter]);
+    return baseProducts.filter((p) => {
+      if (showNivel && nivelFilter && !p.levels?.includes(nivelFilter)) return false;
+      if (showMarca && marcaFilter && extractBrandFromName(p.name) !== marcaFilter) return false;
+      return true;
+    });
+  }, [baseProducts, showNivel, nivelFilter, showMarca, marcaFilter]);
 
   return (
     <>
@@ -69,9 +70,27 @@ export default function CategoryProductsPage({ config }: { config: CategoryPageC
         <Reveal direction="up">
           <CategoryHero title={config.title} subtitle={config.subtitle} />
         </Reveal>
-        <Reveal direction="up" delay={80}>
-          <ProductFilters options={filterOptions} activeFilter={activeFilter} onChange={setActiveFilter} />
-        </Reveal>
+
+        {showNivel && (
+          <Reveal direction="up" delay={80}>
+            <ProductFilters
+              options={nivelOptions}
+              activeFilter={nivelFilter ? { type: "nivel", value: nivelFilter } : null}
+              onChange={(f) => setNivelFilter(f ? (f.value as ProductLevel) : null)}
+            />
+          </Reveal>
+        )}
+
+        {showMarca && (
+          <Reveal direction="up" delay={showNivel ? 140 : 80}>
+            <ProductFilters
+              options={marcaOptions}
+              activeFilter={marcaFilter ? { type: "marca", value: marcaFilter } : null}
+              onChange={(f) => setMarcaFilter(f ? f.value : null)}
+            />
+          </Reveal>
+        )}
+
         <ProductGrid products={filteredProducts} isLoading={isLoading} />
       </div>
       <FeaturedCarousel />
