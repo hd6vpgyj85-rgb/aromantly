@@ -1,14 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import WhatsAppFloatButton from "../components/WhatsAppFloatButton";
 
 export default function SearchLayout() {
+  const location = useLocation();
+
   return (
     <>
       <Header />
       <main>
-        <Outlet />
+        <div key={location.pathname} className="page-transition">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <WhatsAppFloatButton />

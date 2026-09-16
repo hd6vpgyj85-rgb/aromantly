@@ -80,7 +80,7 @@ export default function ProductDetailPage() {
 
           <button
             type="button"
-            className="btn btn-primary btn-block product-detail-add"
+            className={`btn btn-primary btn-block product-detail-add ${justAdded ? "pulse-feedback" : ""}`}
             disabled={isOutOfStock}
             onClick={handleAddToCart}
           >

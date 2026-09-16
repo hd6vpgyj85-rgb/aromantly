@@ -85,7 +85,9 @@ export default function AdminLayout() {
       </header>
 
       <main className="admin-main">
-        <Outlet />
+        <div key={location.pathname} className="page-transition">
+          <Outlet />
+        </div>
       </main>
 
       <nav className="admin-bottom-tabs">

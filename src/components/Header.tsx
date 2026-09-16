@@ -51,7 +51,11 @@ export default function Header() {
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
             </svg>
-            {itemCount > 0 && <span className="site-header-cart-badge">{itemCount}</span>}
+            {itemCount > 0 && (
+              <span key={itemCount} className="site-header-cart-badge badge-pop">
+                {itemCount}
+              </span>
+            )}
           </Link>
           <Link to="/admin" className="site-header-icon site-header-admin" aria-label="Panel de administración" title="Admin">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

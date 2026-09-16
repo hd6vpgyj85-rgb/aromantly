@@ -8,7 +8,9 @@ export default function HomeLayout() {
     <>
       <HomeHeader />
       <main>
-        <Outlet />
+        <div className="page-transition">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <WhatsAppFloatButton />
