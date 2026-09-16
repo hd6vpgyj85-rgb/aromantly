@@ -349,9 +349,15 @@ create table if not exists loyalty_claims (
   requested_at timestamptz not null default now(),
   claimed boolean not null default false,
   claimed_at timestamptz,
-  coupon_id text references coupons(code),
+  coupon_id text references coupons(code) on delete set null,
   unique (customer_id, tier_id)
 );
+
+-- Sin "on delete set null" aquí, borrar un cupón generado por fidelidad
+-- (ej. PREMIO-XXXXXX) quedaba bloqueado para siempre por esta referencia.
+alter table loyalty_claims drop constraint if exists loyalty_claims_coupon_id_fkey;
+alter table loyalty_claims add constraint loyalty_claims_coupon_id_fkey
+  foreign key (coupon_id) references coupons(code) on delete set null;
 
 alter table loyalty_claims enable row level security;
 
