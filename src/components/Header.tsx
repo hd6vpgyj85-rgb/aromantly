@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import MobileNavOverlay from "./MobileNavOverlay";
 import "./Header.css";
 
 const NAV_LINKS = [
@@ -15,6 +17,7 @@ const NAV_LINKS = [
 export default function Header() {
   const { itemCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useBodyScrollLock(isMenuOpen);
 
   return (
     <header className="site-header">
@@ -23,13 +26,12 @@ export default function Header() {
           Aromantly
         </Link>
 
-        <nav className={`site-header-nav ${isMenuOpen ? "site-header-nav-open" : ""}`}>
+        <nav className="site-header-nav-desktop">
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) => `site-header-link ${isActive ? "site-header-link-active" : ""}`}
-              onClick={() => setIsMenuOpen(false)}
             >
               {link.label}
             </NavLink>
@@ -59,8 +61,9 @@ export default function Header() {
           </Link>
           <button
             type="button"
-            className="site-header-burger"
-            aria-label="Menú"
+            className={`site-header-burger ${isMenuOpen ? "site-header-burger-open" : ""}`}
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((v) => !v)}
           >
             <span />
@@ -69,6 +72,8 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      <MobileNavOverlay links={NAV_LINKS} isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </header>
   );
 }
