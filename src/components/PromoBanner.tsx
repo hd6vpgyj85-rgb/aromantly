@@ -6,6 +6,14 @@ import "./PromoBanner.css";
 const DEFAULT_IMAGE = "/images/promo-mandarin-sky.jpg";
 const AUTO_ADVANCE_MS = 8000;
 
+/** Distancia circular más corta entre index y active (puede ser negativa). */
+function circularOffset(index: number, active: number, total: number): number {
+  let diff = index - active;
+  if (diff > total / 2) diff -= total;
+  if (diff < -total / 2) diff += total;
+  return diff;
+}
+
 export default function PromoBanner() {
   const { images } = useHomeBanner();
   const navigate = useNavigate();
@@ -111,6 +119,9 @@ export default function PromoBanner() {
     }
   };
 
+  const goPrev = () => scrollToIndex((activeIndex - 1 + slides.length) % slides.length);
+  const goNext = () => scrollToIndex((activeIndex + 1) % slides.length);
+
   if (slides.length <= 1) {
     return (
       <div className="container">
@@ -123,7 +134,10 @@ export default function PromoBanner() {
 
   return (
     <div className="container">
-      <div className="promo-banner promo-banner-carousel-wrapper">
+      {/* Móvil: una imagen a pantalla completa, deslizable. En escritorio se
+          veía deforme y demasiado grande estirada a todo el ancho, así que
+          ahí se usa el coverflow de abajo en su lugar. */}
+      <div className="promo-banner promo-banner-carousel-wrapper promo-mobile-only">
         <div
           className="promo-banner-carousel"
           ref={trackRef}
@@ -145,6 +159,70 @@ export default function PromoBanner() {
         </div>
 
         <div className="promo-banner-dots">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              className={`promo-banner-dot ${index === activeIndex ? "promo-banner-dot-active" : ""}`}
+              aria-label={`Ver imagen ${index + 1}`}
+              onClick={() => scrollToIndex(index)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Escritorio: coverflow, 3 tarjetas a la vista con la del centro al
+          frente. Las flechas y el auto-avance cada 8s rotan las imágenes. */}
+      <div className="promo-desktop-only">
+        <div className="promo-coverflow">
+          <button
+            type="button"
+            className="promo-coverflow-arrow promo-coverflow-arrow-left"
+            onClick={goPrev}
+            aria-label="Anterior"
+          >
+            ‹
+          </button>
+
+          <div className="promo-coverflow-track">
+            {slides.map((src, index) => {
+              const offset = circularOffset(index, activeIndex, slides.length);
+              const isCenter = offset === 0;
+              const absOffset = Math.abs(offset);
+              const scale = isCenter ? 1 : absOffset === 1 ? 0.8 : 0.65;
+              const opacity = isCenter ? 1 : absOffset === 1 ? 0.55 : 0;
+
+              return (
+                <button
+                  key={`${src}-${index}`}
+                  type="button"
+                  className={`promo-coverflow-slide ${isCenter ? "promo-coverflow-slide-active" : ""}`}
+                  style={{
+                    transform: `translate(-50%, -50%) translateX(${offset * 230}px) scale(${scale})`,
+                    zIndex: 10 - absOffset,
+                    opacity,
+                    pointerEvents: absOffset > 1 ? "none" : "auto",
+                  }}
+                  onClick={() => (isCenter ? navigate("/ofertas") : scrollToIndex(index))}
+                  aria-label={isCenter ? "Ver edición limitada en Ofertas" : `Ver imagen ${index + 1}`}
+                >
+                  <img src={src} alt="Edición limitada" loading="lazy" draggable={false} />
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="promo-coverflow-arrow promo-coverflow-arrow-right"
+            onClick={goNext}
+            aria-label="Siguiente"
+          >
+            ›
+          </button>
+        </div>
+
+        <div className="promo-banner-dots promo-coverflow-dots">
           {slides.map((_, index) => (
             <button
               key={index}
