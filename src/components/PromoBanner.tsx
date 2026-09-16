@@ -133,11 +133,12 @@ export default function PromoBanner() {
   }
 
   return (
-    <div className="container">
+    <>
       {/* Móvil: una imagen a pantalla completa, deslizable. En escritorio se
           veía deforme y demasiado grande estirada a todo el ancho, así que
           ahí se usa el coverflow de abajo en su lugar. */}
-      <div className="promo-banner promo-banner-carousel-wrapper promo-mobile-only">
+      <div className="container promo-mobile-only">
+        <div className="promo-banner promo-banner-carousel-wrapper">
         <div
           className="promo-banner-carousel"
           ref={trackRef}
@@ -158,21 +159,24 @@ export default function PromoBanner() {
           ))}
         </div>
 
-        <div className="promo-banner-dots">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`promo-banner-dot ${index === activeIndex ? "promo-banner-dot-active" : ""}`}
-              aria-label={`Ver imagen ${index + 1}`}
-              onClick={() => scrollToIndex(index)}
-            />
-          ))}
+          <div className="promo-banner-dots">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`promo-banner-dot ${index === activeIndex ? "promo-banner-dot-active" : ""}`}
+                aria-label={`Ver imagen ${index + 1}`}
+                onClick={() => scrollToIndex(index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Escritorio: coverflow, 3 tarjetas a la vista con la del centro al
-          frente. Las flechas y el auto-avance cada 8s rotan las imágenes. */}
+      {/* Escritorio: coverflow a todo lo ancho de la pantalla (con un poco
+          de separación de los bordes), 3 tarjetas a la vista con la del
+          centro al frente. Las flechas y el auto-avance cada 8s rotan las
+          imágenes. */}
       <div className="promo-desktop-only">
         <div className="promo-coverflow">
           <button
@@ -198,7 +202,7 @@ export default function PromoBanner() {
                   type="button"
                   className={`promo-coverflow-slide ${isCenter ? "promo-coverflow-slide-active" : ""}`}
                   style={{
-                    transform: `translate(-50%, -50%) translateX(${offset * 230}px) scale(${scale})`,
+                    transform: `translate(-50%, -50%) translateX(calc(${offset} * min(24vw, 340px))) scale(${scale})`,
                     zIndex: 10 - absOffset,
                     opacity,
                     pointerEvents: absOffset > 1 ? "none" : "auto",
@@ -234,6 +238,6 @@ export default function PromoBanner() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
