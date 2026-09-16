@@ -12,7 +12,7 @@ export default function HomeLayout() {
           <Outlet />
         </div>
       </main>
-      <Footer />
+      <Footer plain />
       <WhatsAppFloatButton />
     </>
   );

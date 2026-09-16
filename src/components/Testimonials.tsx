@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useReviews } from "../contexts/ReviewsContext";
 import "./Testimonials.css";
 
@@ -21,8 +22,19 @@ function Stars({ rating }: { rating: number }) {
 export default function Testimonials() {
   const { approvedReviews } = useReviews();
   const [slide, setSlide] = useState(0);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const slides = approvedReviews.slice(0, 2);
+
+  useEffect(() => {
+    if (!isPreviewOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsPreviewOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPreviewOpen]);
+
   if (slides.length === 0) return null;
 
   const current = slides[slide];
@@ -35,9 +47,14 @@ export default function Testimonials() {
         {/* key fuerza el remontaje para que el cross-fade se dispare en cada cambio */}
         <div className="testimonials-slide" key={slide}>
           {current.image && (
-            <div className="testimonial-image">
+            <button
+              type="button"
+              className="testimonial-image"
+              onClick={() => setIsPreviewOpen(true)}
+              aria-label="Ver foto de la reseña en grande"
+            >
               <img src={current.image} alt={current.name} loading="lazy" />
-            </div>
+            </button>
           )}
           <div className="testimonial-body">
             <Stars rating={current.rating} />
@@ -61,6 +78,23 @@ export default function Testimonials() {
           </div>
         )}
       </div>
+
+      {isPreviewOpen &&
+        current.image &&
+        createPortal(
+          <div className="testimonial-preview" onClick={() => setIsPreviewOpen(false)}>
+            <button
+              type="button"
+              className="testimonial-preview-close"
+              aria-label="Cerrar"
+              onClick={() => setIsPreviewOpen(false)}
+            >
+              ×
+            </button>
+            <img src={current.image} alt={current.name} onClick={(e) => e.stopPropagation()} />
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

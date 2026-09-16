@@ -5,6 +5,12 @@
     url("/images/tienda-interior.jpg") center/cover no-repeat;
 }
 
+/* Solo el inicio lleva el footer negro sin foto; el resto de páginas
+   conserva la foto de la tienda. */
+.site-footer-plain {
+  background: var(--color-bg);
+}
+
 .site-footer-content {
   display: flex;
   flex-direction: column;

@@ -30,11 +30,50 @@
 }
 
 .testimonial-image {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--color-surface-alt);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.testimonial-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  animation: fade-in 0.25s ease both;
+}
+
+.testimonial-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.testimonial-preview-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  background: rgba(10, 10, 10, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
 }
 
 .testimonial-image img {
