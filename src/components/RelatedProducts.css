@@ -1,0 +1,20 @@
+.related-products {
+  padding: 48px 0 60px;
+}
+
+.related-products h2 {
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+
+.related-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .related-products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

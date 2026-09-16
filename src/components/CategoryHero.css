@@ -1,0 +1,14 @@
+.category-hero {
+  padding-top: 28px;
+}
+
+.category-hero h2 {
+  font-size: 22px;
+}
+
+.category-hero p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-top: 8px;
+  max-width: 560px;
+}

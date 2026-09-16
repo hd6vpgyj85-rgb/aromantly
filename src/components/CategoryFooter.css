@@ -1,0 +1,49 @@
+.category-footer {
+  position: relative;
+  margin-top: 40px;
+  padding: 70px 0;
+  overflow: hidden;
+}
+
+.category-footer-photo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #111a0a 0%, #0a0a0a 60%), url("/images/tienda-interior.jpg") center/cover no-repeat;
+}
+
+.category-footer-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.75);
+}
+
+.category-footer-content {
+  position: relative;
+  text-align: center;
+  max-width: 560px;
+}
+
+.category-footer-content h2 {
+  font-size: 26px;
+}
+
+.category-footer-content p {
+  color: var(--color-text-muted);
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.category-footer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (min-width: 640px) {
+  .category-footer-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
