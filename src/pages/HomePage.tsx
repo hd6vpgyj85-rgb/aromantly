@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { getWhatsAppUrl } from "../data/store";
+import PromoBanner from "../components/PromoBanner";
 import LevelsSection from "../components/LevelsSection";
 import TopProducts from "../components/TopProducts";
 import Testimonials from "../components/Testimonials";
@@ -38,6 +39,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      <PromoBanner />
       <LevelsSection />
       <TopProducts />
       <Testimonials />

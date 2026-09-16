@@ -126,7 +126,7 @@ textarea {
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-lg);
   padding: 28px;
-  box-shadow: 0 0 40px rgba(126, 211, 33, 0.15);
+  box-shadow: 0 0 40px rgba(255, 122, 26, 0.15);
 }
 
 .loyalty-qr-label {

@@ -68,6 +68,14 @@
   color: var(--color-accent-neon);
 }
 
+.site-header-admin {
+  color: var(--color-text-muted);
+}
+
+.site-header-admin:hover {
+  color: var(--color-accent-neon);
+}
+
 .site-header-cart-badge {
   position: absolute;
   top: -8px;

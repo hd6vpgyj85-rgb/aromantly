@@ -5,9 +5,9 @@
   --color-border: #262626;
   --color-text: #f5f5f3;
   --color-text-muted: #9a9a95;
-  --color-accent: #7ed321;
-  --color-accent-dark: #64a91b;
-  --color-accent-neon: #97e520;
+  --color-accent: #ff7a1a;
+  --color-accent-dark: #cc5500;
+  --color-accent-neon: #ffab40;
 
   --font-display: "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Helvetica Neue", Arial, sans-serif;
@@ -98,7 +98,7 @@ h4 {
 
 .btn-primary:hover {
   background: var(--color-accent-neon);
-  box-shadow: 0 0 20px rgba(126, 211, 33, 0.4);
+  box-shadow: 0 0 20px rgba(255, 122, 26, 0.4);
 }
 
 .btn-secondary {

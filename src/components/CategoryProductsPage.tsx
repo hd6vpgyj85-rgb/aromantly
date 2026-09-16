@@ -59,7 +59,11 @@ export default function CategoryProductsPage({ config }: { config: CategoryPageC
 
   return (
     <>
-      <CategoryPhotoBanner title={config.title} tagline={config.tagline} image={config.bannerImage} />
+      <CategoryPhotoBanner
+        title={config.title}
+        tagline={config.tagline}
+        image={config.bannerImage ?? "/images/category-banner.jpg"}
+      />
       <div className="container">
         <CategoryHero title={config.title} subtitle={config.subtitle} />
         <ProductFilters options={filterOptions} activeFilter={activeFilter} onChange={setActiveFilter} />

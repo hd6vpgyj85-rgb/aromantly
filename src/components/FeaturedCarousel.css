@@ -58,7 +58,7 @@
 .featured-carousel-item-active .featured-carousel-thumb {
   transform: scale(1.18);
   border-color: var(--color-accent);
-  box-shadow: 0 0 28px rgba(126, 211, 33, 0.45);
+  box-shadow: 0 0 28px rgba(255, 122, 26, 0.45);
 }
 
 .carousel-arrow {

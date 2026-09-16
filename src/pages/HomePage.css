@@ -3,7 +3,7 @@
   min-height: 560px;
   display: flex;
   align-items: center;
-  background: radial-gradient(circle at 30% 20%, rgba(126, 211, 33, 0.14), transparent 55%), var(--color-bg)
+  background: radial-gradient(circle at 30% 20%, rgba(255, 122, 26, 0.14), transparent 55%), var(--color-bg)
     url("/images/hero-perfumes.jpg") center/cover no-repeat;
 }
 
@@ -21,7 +21,7 @@
 
 .hero-badge {
   display: inline-block;
-  background: rgba(126, 211, 33, 0.12);
+  background: rgba(255, 122, 26, 0.12);
   border: 1px solid var(--color-accent);
   color: var(--color-accent-neon);
   font-size: 12px;
