@@ -40,6 +40,22 @@ export default function FeaturedCarousel() {
     if (!track) return;
 
     const handleScroll = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      // En los extremos el padding lateral del track no alcanza a centrar
+      // el primer/último thumbnail (haría falta la mitad del ancho del
+      // viewport de padding), así que "el más cercano al centro" nunca
+      // daba el índice 0 ni el último: se quedaba trabado en el segundo
+      // o el penúltimo. Por eso los extremos del scroll se detectan aparte.
+      if (track.scrollLeft <= 1) {
+        setActiveIndex(0);
+        return;
+      }
+      if (track.scrollLeft >= maxScroll - 1) {
+        setActiveIndex(track.children.length - 1);
+        return;
+      }
+
       const children = Array.from(track.children) as HTMLElement[];
       const center = track.scrollLeft + track.clientWidth / 2;
       let closestIndex = 0;
