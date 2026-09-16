@@ -33,7 +33,13 @@ export default function PromoBanner() {
     if (suppressTimeoutRef.current) clearTimeout(suppressTimeoutRef.current);
     suppressScrollDetectionRef.current = true;
     setActiveIndex(index);
-    child.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    // scrollIntoView revisa también los contenedores ancestros (incluida la
+    // página): si el banner no está visible (por ejemplo, el cliente está
+    // leyendo el footer cuando cambia la imagen sola), termina moviendo el
+    // scroll de toda la página hasta el banner. Cada slide ocupa el 100%
+    // del ancho, así que la posición exacta es simplemente índice × ancho,
+    // y track.scrollTo solo mueve el carrusel, nunca la página.
+    track.scrollTo({ left: index * track.clientWidth, behavior: "smooth" });
     suppressTimeoutRef.current = setTimeout(() => {
       suppressScrollDetectionRef.current = false;
     }, 600);
