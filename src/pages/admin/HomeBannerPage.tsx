@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useHomeBanner } from "../../contexts/HomeBannerContext";
+import { useLevelImages, type LevelImages } from "../../contexts/LevelImagesContext";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "../../lib/supabase";
 import { compressImages } from "../../utils/image";
+import { LEVEL_OPTIONS } from "../../data/store";
+import type { ProductLevel } from "../../types";
 
 export default function HomeBannerPage() {
   const { images, isLoading, saveImages } = useHomeBanner();
@@ -11,9 +14,63 @@ export default function HomeBannerPage() {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  const {
+    images: levelImages,
+    isLoading: isLevelImagesLoading,
+    saveImages: saveLevelImages,
+  } = useLevelImages();
+  const [levelDraft, setLevelDraft] = useState<LevelImages>(levelImages);
+  const [uploadingLevel, setUploadingLevel] = useState<ProductLevel | null>(null);
+  const [isSavingLevels, setIsSavingLevels] = useState(false);
+  const [levelError, setLevelError] = useState<string | null>(null);
+  const [levelSaved, setLevelSaved] = useState(false);
+
   useEffect(() => {
     setDraft(images);
   }, [images]);
+
+  useEffect(() => {
+    setLevelDraft(levelImages);
+  }, [levelImages]);
+
+  const handleLevelUpload = async (slug: ProductLevel, files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    setUploadingLevel(slug);
+    setLevelError(null);
+    setLevelSaved(false);
+    try {
+      const [compressed] = await compressImages([file]);
+      const path = `levels/${slug}-${Date.now()}-${compressed.name}`;
+      const { error: uploadError } = await supabase.storage.from(PRODUCT_IMAGES_BUCKET).upload(path, compressed);
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from(PRODUCT_IMAGES_BUCKET).getPublicUrl(path);
+      setLevelDraft((prev) => ({ ...prev, [slug]: data.publicUrl }));
+    } catch (err) {
+      setLevelError(err instanceof Error ? err.message : "No se pudo subir la imagen.");
+    } finally {
+      setUploadingLevel(null);
+    }
+  };
+
+  const removeLevelImage = (slug: ProductLevel) => {
+    setLevelDraft((prev) => ({ ...prev, [slug]: null }));
+    setLevelSaved(false);
+  };
+
+  const handleSaveLevels = async () => {
+    setIsSavingLevels(true);
+    setLevelError(null);
+    try {
+      await saveLevelImages(levelDraft);
+      setLevelSaved(true);
+      setTimeout(() => setLevelSaved(false), 2500);
+    } catch (err) {
+      setLevelError(err instanceof Error ? err.message : "No se pudieron guardar los cambios.");
+    } finally {
+      setIsSavingLevels(false);
+    }
+  };
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -89,16 +146,16 @@ export default function HomeBannerPage() {
     }
   };
 
-  if (isLoading) return <p className="admin-empty">Cargando…</p>;
+  if (isLoading || isLevelImagesLoading) return <p className="admin-empty">Cargando…</p>;
 
   return (
     <div>
       <div className="admin-page-header">
-        <h1>Banner de inicio</h1>
+        <h1>Contenido de inicio</h1>
       </div>
 
       <div className="admin-form-section">
-        <h2>Imágenes</h2>
+        <h2>Banner</h2>
         <p className="admin-form-hint">
           Con 1 imagen se muestra fija. Con 2 o más se muestran en carrusel: cambian solas cada 8
           segundos y el cliente también puede deslizar para verlas todas. La primera imagen de la
@@ -134,6 +191,57 @@ export default function HomeBannerPage() {
 
         <button type="button" className="btn btn-primary btn-block" disabled={isSaving} onClick={handleSave}>
           {isSaving ? "Guardando..." : saved ? "¡Guardado!" : "Guardar cambios"}
+        </button>
+      </div>
+
+      <div className="admin-form-section">
+        <h2>Fotos de "Elige tu perfume"</h2>
+        <p className="admin-form-hint">
+          Una foto por nivel. Se muestran en círculo en el inicio, en el mismo orden de siempre
+          (árabe, diseñador, nicho).
+        </p>
+
+        <div className="admin-level-photos">
+          {LEVEL_OPTIONS.map((level) => (
+            <div key={level.slug} className="admin-level-photo-slot">
+              <div className="admin-level-photo-preview">
+                {levelDraft[level.slug] ? (
+                  <img src={levelDraft[level.slug] as string} alt={level.label} />
+                ) : (
+                  <span className="admin-level-photo-placeholder" />
+                )}
+                {levelDraft[level.slug] && (
+                  <button
+                    type="button"
+                    className="admin-image-remove"
+                    onClick={() => removeLevelImage(level.slug)}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              <span className="admin-level-photo-label">{level.label}</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleLevelUpload(level.slug, e.target.files)}
+              />
+              {uploadingLevel === level.slug && (
+                <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Subiendo…</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {levelError && <p className="admin-form-error">{levelError}</p>}
+
+        <button
+          type="button"
+          className="btn btn-primary btn-block"
+          disabled={isSavingLevels}
+          onClick={handleSaveLevels}
+        >
+          {isSavingLevels ? "Guardando..." : levelSaved ? "¡Guardado!" : "Guardar cambios"}
         </button>
       </div>
     </div>

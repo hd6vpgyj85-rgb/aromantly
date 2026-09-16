@@ -633,6 +633,35 @@ create policy "home_banner_update_authenticated" on home_banner
   with check (true);
 
 -- ───────────────────────────────────────────────────────────────────
+-- FOTOS DE "ELIGE TU PERFUME": una imagen por nivel (árabe, diseñador,
+-- nicho), editables desde el admin. Tabla singleton (una sola fila).
+-- ───────────────────────────────────────────────────────────────────
+create table if not exists level_images (
+  id boolean primary key default true check (id),
+  arabe_image text,
+  disenador_image text,
+  nicho_image text,
+  updated_at timestamptz not null default now()
+);
+
+insert into level_images (id) values (true) on conflict (id) do nothing;
+
+alter table level_images enable row level security;
+
+drop policy if exists "level_images_select_public" on level_images;
+create policy "level_images_select_public" on level_images
+  for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists "level_images_update_authenticated" on level_images;
+create policy "level_images_update_authenticated" on level_images
+  for update
+  to authenticated
+  using (true)
+  with check (true);
+
+-- ───────────────────────────────────────────────────────────────────
 -- DATOS INICIALES: niveles del programa de fidelidad
 -- ───────────────────────────────────────────────────────────────────
 insert into loyalty_tiers (purchases_required, reward_description, discount_percent)
