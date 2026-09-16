@@ -34,9 +34,9 @@ export const CATEGORY_TAGLINES: Record<string, string> = {
 export const storeInfo = {
   name: "Aromantly",
   tagline: "Perfumería en Cd. Juárez",
-  whatsappNumber: "526561234567",
-  address: "Av. Paseo Triunfo de la República, Cd. Juárez, Chih.",
-  scheduleLines: ["Lunes a sábado: 10:00 am – 8:00 pm", "Domingo: 11:00 am – 6:00 pm"],
+  whatsappNumber: "526568596503",
+  address: "Cd. Juárez, Chihuahua",
+  scheduleLines: ["Todos los días: 12:00 pm – 12:00 am"],
   instagram: "https://instagram.com/aromantly",
   facebook: "https://facebook.com/aromantly",
 };
