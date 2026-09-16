@@ -112,47 +112,6 @@
   letter-spacing: 2px;
 }
 
-/* Indicador de scroll en la portada. */
-.hero-scroll-hint {
-  position: absolute;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 38px;
-  border: 2px solid rgba(245, 245, 243, 0.35);
-  border-radius: 14px;
-  display: flex;
-  justify-content: center;
-  padding-top: 7px;
-}
-
-.hero-scroll-hint span {
-  width: 3px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--color-accent);
-  animation: scroll-hint 1.8s ease-in-out infinite;
-}
-
-@keyframes scroll-hint {
-  0% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  35% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
-
 @media (min-width: 640px) {
   .hero-actions {
     flex-direction: row;
@@ -173,9 +132,5 @@
   .hero::before {
     animation: none;
     transform: none;
-  }
-
-  .hero-scroll-hint span {
-    animation: none;
   }
 }

@@ -38,9 +38,6 @@ export default function HomePage() {
             <span>+500 clientes asesorados</span>
           </div>
         </div>
-        <div className="hero-scroll-hint hero-anim hero-anim-5" aria-hidden="true">
-          <span />
-        </div>
       </section>
 
       <Reveal direction="zoom">
