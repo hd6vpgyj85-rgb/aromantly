@@ -204,12 +204,14 @@ export default function HomeBannerPage() {
         <div className="admin-level-photos">
           {LEVEL_OPTIONS.map((level) => (
             <div key={level.slug} className="admin-level-photo-slot">
-              <div className="admin-level-photo-preview">
-                {levelDraft[level.slug] ? (
-                  <img src={levelDraft[level.slug] as string} alt={level.label} />
-                ) : (
-                  <span className="admin-level-photo-placeholder" />
-                )}
+              <div className="admin-level-photo-frame">
+                <div className="admin-level-photo-preview">
+                  {levelDraft[level.slug] ? (
+                    <img src={levelDraft[level.slug] as string} alt={level.label} />
+                  ) : (
+                    <span className="admin-level-photo-placeholder" />
+                  )}
+                </div>
                 {levelDraft[level.slug] && (
                   <button
                     type="button"
@@ -219,13 +221,20 @@ export default function HomeBannerPage() {
                     ×
                   </button>
                 )}
+                <label className="admin-level-photo-upload" aria-label={`Cambiar foto de ${level.label}`}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <circle cx="8.5" cy="10" r="1.5" />
+                    <path d="m21 16-5-5-9 9" />
+                  </svg>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleLevelUpload(level.slug, e.target.files)}
+                  />
+                </label>
               </div>
               <span className="admin-level-photo-label">{level.label}</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleLevelUpload(level.slug, e.target.files)}
-              />
               {uploadingLevel === level.slug && (
                 <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Subiendo…</span>
               )}

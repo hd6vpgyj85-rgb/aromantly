@@ -473,13 +473,22 @@ a.admin-stat-card:hover {
   gap: 8px;
 }
 
-.admin-level-photo-preview {
+/* Envuelve el círculo + los botones flotantes (quitar / cambiar foto).
+   El círculo en sí tiene overflow:hidden para recortar la imagen, así
+   que los botones van en este marco de afuera para no quedar cortados
+   por la curva del círculo. */
+.admin-level-photo-frame {
   position: relative;
+  width: 100%;
+}
+
+.admin-level-photo-preview {
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 0 14px rgba(255, 122, 26, 0.45), 0 0 28px rgba(255, 122, 26, 0.2);
   background: var(--color-surface-alt);
 }
 
@@ -502,9 +511,32 @@ a.admin-stat-card:hover {
   color: var(--color-text-muted);
 }
 
-.admin-level-photo-slot input[type="file"] {
-  font-size: 11px;
-  max-width: 100%;
+/* Ícono chico de galería (en vez del botón grande "Choose File" nativo)
+   superpuesto en la esquina del círculo; el input real va oculto adentro. */
+.admin-level-photo-upload {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-level-photo-upload:hover {
+  background: var(--color-accent-neon);
+  transform: scale(1.08);
+}
+
+.admin-level-photo-upload input[type="file"] {
+  display: none;
 }
 
 .admin-modal-overlay {
