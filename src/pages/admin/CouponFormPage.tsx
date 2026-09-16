@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoupons } from "../../contexts/CouponsContext";
-import type { DiscountType } from "../../types";
+import type { CouponScope, DiscountType } from "../../types";
 
 export default function CouponFormPage() {
   const navigate = useNavigate();
@@ -10,6 +10,7 @@ export default function CouponFormPage() {
   const [code, setCode] = useState("");
   const [discountType, setDiscountType] = useState<DiscountType>("percentage");
   const [discountValue, setDiscountValue] = useState("");
+  const [scope, setScope] = useState<CouponScope>("cart");
   const [usageLimit, setUsageLimit] = useState("1");
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -29,6 +30,7 @@ export default function CouponFormPage() {
         code: code.trim(),
         discountType,
         discountValue: Number(discountValue),
+        scope,
         usageLimit: Number(usageLimit) || 1,
       });
       navigate("/admin/cupones");
@@ -69,6 +71,14 @@ export default function CouponFormPage() {
             onChange={(e) => setDiscountValue(e.target.value)}
             required
           />
+        </div>
+
+        <div className="admin-form-section">
+          <h2>Alcance</h2>
+          <select value={scope} onChange={(e) => setScope(e.target.value as CouponScope)}>
+            <option value="cart">Carrito completo (aplica sin importar cuántos productos compre)</option>
+            <option value="single_product">Un solo producto (solo aplica si compra un único artículo)</option>
+          </select>
         </div>
 
         <div className="admin-form-section">

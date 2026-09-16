@@ -360,10 +360,20 @@ function CustomerRewardsModal({ customer, tiers, claims, onClose, onConfirm, onR
 
 interface LoyaltyTiersEditorProps {
   tiers: import("../../types").LoyaltyTier[];
-  onCreate: (input: { purchasesRequired: number; rewardDescription: string; discountPercent?: number }) => Promise<unknown>;
+  onCreate: (input: {
+    purchasesRequired: number;
+    rewardDescription: string;
+    discountPercent?: number;
+    couponScope?: import("../../types").CouponScope;
+  }) => Promise<unknown>;
   onUpdate: (
     id: string,
-    input: { purchasesRequired: number; rewardDescription: string; discountPercent?: number }
+    input: {
+      purchasesRequired: number;
+      rewardDescription: string;
+      discountPercent?: number;
+      couponScope?: import("../../types").CouponScope;
+    }
   ) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }
@@ -372,6 +382,7 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
   const [purchasesRequired, setPurchasesRequired] = useState("");
   const [rewardDescription, setRewardDescription] = useState("");
   const [discountPercent, setDiscountPercent] = useState("");
+  const [couponScope, setCouponScope] = useState<import("../../types").CouponScope>("cart");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -379,6 +390,7 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
     setPurchasesRequired("");
     setRewardDescription("");
     setDiscountPercent("");
+    setCouponScope("cart");
     setEditingId(null);
   };
 
@@ -387,6 +399,7 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
     setPurchasesRequired(String(tier.purchasesRequired));
     setRewardDescription(tier.rewardDescription);
     setDiscountPercent(tier.discountPercent ? String(tier.discountPercent) : "");
+    setCouponScope(tier.couponScope ?? "cart");
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -403,6 +416,7 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
       purchasesRequired: required,
       rewardDescription: rewardDescription.trim(),
       discountPercent: discountPercent.trim() ? Number(discountPercent) : undefined,
+      couponScope,
     };
 
     try {
@@ -425,7 +439,11 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
                 <div className="admin-row-card-title">{tier.purchasesRequired} compras</div>
                 <div className="admin-row-card-subtitle">
                   {tier.rewardDescription}
-                  {tier.discountPercent ? ` · ${tier.discountPercent}% de descuento` : ""}
+                  {tier.discountPercent
+                    ? ` · ${tier.discountPercent}% de descuento (${
+                        tier.couponScope === "single_product" ? "un solo producto" : "carrito completo"
+                      })`
+                    : ""}
                 </div>
               </div>
               <div className="admin-row-card-actions">
@@ -466,6 +484,12 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
           value={rewardDescription}
           onChange={(e) => setRewardDescription(e.target.value)}
         />
+        {discountPercent.trim() && (
+          <select value={couponScope} onChange={(e) => setCouponScope(e.target.value as import("../../types").CouponScope)}>
+            <option value="cart">Cupón válido en carrito completo (cualquier cantidad)</option>
+            <option value="single_product">Cupón válido solo para un producto</option>
+          </select>
+        )}
         {error && <p className="admin-form-error">{error}</p>}
         <div className="admin-inline-actions">
           {editingId && (

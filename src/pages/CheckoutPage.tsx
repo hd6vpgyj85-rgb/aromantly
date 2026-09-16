@@ -48,7 +48,7 @@ const INITIAL_FORM: FormState = {
 };
 
 export default function CheckoutPage() {
-  const { lines, subtotal, clearCart } = useCart();
+  const { lines, subtotal, itemCount, clearCart } = useCart();
   const { createOrder } = useOrders();
   const { createReview } = useReviews();
   const { redeemCoupon } = useCoupons();
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
       let appliedCoupon: { code: string; discountType: string; discountValue: number } | null = null;
 
       if (form.couponCode.trim()) {
-        const result = await redeemCoupon(form.couponCode.trim());
+        const result = await redeemCoupon(form.couponCode.trim(), itemCount);
         discount =
           result.discountType === "percentage"
             ? (subtotal * result.discountValue) / 100

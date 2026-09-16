@@ -31,6 +31,9 @@ export default function CouponsPage() {
                 <span className={`admin-badge ${coupon.active ? "admin-badge-green" : "admin-badge-gray"}`}>
                   {coupon.active ? "Activo" : "Inactivo"}
                 </span>
+                <span className="admin-badge admin-badge-gray" style={{ marginLeft: 6 }}>
+                  {coupon.scope === "single_product" ? "Un solo producto" : "Carrito completo"}
+                </span>
               </div>
               <div className="admin-row-card-actions">
                 <button

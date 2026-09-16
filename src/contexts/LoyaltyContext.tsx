@@ -1,12 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
-import type { LoyaltyClaim, LoyaltyTier } from "../types";
+import type { CouponScope, LoyaltyClaim, LoyaltyTier } from "../types";
 
 interface TierRow {
   id: string;
   purchases_required: number;
   reward_description: string;
   discount_percent: number | null;
+  coupon_scope: string | null;
   created_at: string;
 }
 
@@ -16,6 +17,7 @@ function rowToTier(row: TierRow): LoyaltyTier {
     purchasesRequired: row.purchases_required,
     rewardDescription: row.reward_description,
     discountPercent: row.discount_percent ?? undefined,
+    couponScope: (row.coupon_scope as CouponScope) ?? "cart",
     createdAt: row.created_at,
   };
 }
@@ -56,6 +58,7 @@ interface CreateTierInput {
   purchasesRequired: number;
   rewardDescription: string;
   discountPercent?: number;
+  couponScope?: CouponScope;
 }
 
 interface CustomerToken {
@@ -121,6 +124,7 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         purchases_required: input.purchasesRequired,
         reward_description: input.rewardDescription,
         discount_percent: input.discountPercent ?? null,
+        coupon_scope: input.couponScope ?? "cart",
       })
       .select()
       .single();
@@ -138,13 +142,24 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         purchases_required: updates.purchasesRequired,
         reward_description: updates.rewardDescription,
         discount_percent: updates.discountPercent ?? null,
+        coupon_scope: updates.couponScope ?? "cart",
       })
       .eq("id", id);
 
     if (error) throw error;
     setTiers((prev) =>
       prev
-        .map((t) => (t.id === id ? { ...t, purchasesRequired: updates.purchasesRequired, rewardDescription: updates.rewardDescription, discountPercent: updates.discountPercent } : t))
+        .map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                purchasesRequired: updates.purchasesRequired,
+                rewardDescription: updates.rewardDescription,
+                discountPercent: updates.discountPercent,
+                couponScope: updates.couponScope ?? "cart",
+              }
+            : t
+        )
         .sort((a, b) => a.purchasesRequired - b.purchasesRequired)
     );
   }, []);

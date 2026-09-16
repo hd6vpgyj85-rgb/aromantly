@@ -190,11 +190,16 @@ create table if not exists coupons (
   code text primary key,
   discount_type text not null,
   discount_value numeric not null,
+  scope text not null default 'cart' check (scope in ('single_product', 'cart')),
   usage_limit integer not null,
   times_used integer not null default 0,
   active boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+alter table coupons add column if not exists scope text not null default 'cart';
+alter table coupons drop constraint if exists coupons_scope_check;
+alter table coupons add constraint coupons_scope_check check (scope in ('single_product', 'cart'));
 
 alter table coupons enable row level security;
 
@@ -205,7 +210,9 @@ create policy "coupons_all_authenticated" on coupons
   using (true)
   with check (true);
 
-create or replace function redeem_coupon(p_code text)
+drop function if exists redeem_coupon(text);
+
+create or replace function redeem_coupon(p_code text, p_item_count integer)
 returns table(discount_type text, discount_value numeric)
 language plpgsql
 security definer
@@ -224,13 +231,17 @@ begin
     raise exception 'CUPON_AGOTADO';
   end if;
 
+  if v_coupon.scope = 'single_product' and p_item_count <> 1 then
+    raise exception 'CUPON_NO_APLICA';
+  end if;
+
   update coupons set times_used = times_used + 1 where code = v_coupon.code;
 
   return query select v_coupon.discount_type, v_coupon.discount_value;
 end;
 $$;
 
-grant execute on function redeem_coupon(text) to anon, authenticated;
+grant execute on function redeem_coupon(text, integer) to anon, authenticated;
 
 -- ───────────────────────────────────────────────────────────────────
 -- CLIENTES (fidelidad)
@@ -261,8 +272,13 @@ create table if not exists loyalty_tiers (
   purchases_required integer not null,
   reward_description text not null,
   discount_percent integer,
+  coupon_scope text not null default 'cart' check (coupon_scope in ('single_product', 'cart')),
   created_at timestamptz not null default now()
 );
+
+alter table loyalty_tiers add column if not exists coupon_scope text not null default 'cart';
+alter table loyalty_tiers drop constraint if exists loyalty_tiers_coupon_scope_check;
+alter table loyalty_tiers add constraint loyalty_tiers_coupon_scope_check check (coupon_scope in ('single_product', 'cart'));
 
 alter table loyalty_tiers enable row level security;
 
@@ -429,8 +445,8 @@ begin
       end loop;
 
       begin
-        insert into coupons (code, discount_type, discount_value, usage_limit, active)
-        values (v_code, 'percentage', v_tier.discount_percent, 1, true);
+        insert into coupons (code, discount_type, discount_value, scope, usage_limit, active)
+        values (v_code, 'percentage', v_tier.discount_percent, v_tier.coupon_scope, 1, true);
         exit;
       exception
         when unique_violation then

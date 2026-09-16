@@ -89,10 +89,18 @@ export interface Review {
 
 export type DiscountType = "percentage" | "fixed";
 
+/**
+ * "single_product": el cupón solo aplica si el carrito tiene un único
+ * artículo (1 producto, cantidad 1). "cart": aplica sin importar cuántos
+ * productos o unidades haya en el carrito.
+ */
+export type CouponScope = "single_product" | "cart";
+
 export interface Coupon {
   code: string;
   discountType: DiscountType;
   discountValue: number;
+  scope: CouponScope;
   usageLimit: number;
   timesUsed: number;
   active: boolean;
@@ -114,6 +122,8 @@ export interface LoyaltyTier {
   purchasesRequired: number;
   rewardDescription: string;
   discountPercent?: number;
+  /** Alcance del cupón que se genera al reclamar este nivel (solo aplica si discountPercent está definido). */
+  couponScope?: CouponScope;
   createdAt: string;
 }
 
