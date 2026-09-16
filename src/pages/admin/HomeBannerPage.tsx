@@ -149,7 +149,7 @@ export default function HomeBannerPage() {
   if (isLoading || isLevelImagesLoading) return <p className="admin-empty">Cargando…</p>;
 
   return (
-    <div>
+    <div className="admin-banner-page">
       <div className="admin-page-header">
         <h1>Contenido de inicio</h1>
       </div>

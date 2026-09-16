@@ -446,6 +446,19 @@ a.admin-stat-card:hover {
   opacity: 0.35;
 }
 
+/* Esta página en particular (banner + fotos por nivel) se veía muy
+   apretada con el gap general de .admin-form-section; aquí se le da más
+   aire sin afectar el resto de formularios del admin. */
+.admin-banner-page .admin-form-section {
+  gap: 18px;
+}
+
+.admin-banner-page .admin-form-section + .admin-form-section {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
+}
+
 .admin-level-photos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
