@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import QRCode from "qrcode";
 import { useLoyalty } from "../contexts/LoyaltyContext";
 import { getWhatsAppUrl } from "../data/store";
@@ -75,13 +75,21 @@ export default function FidelidadPage() {
   };
 
   if (customer === undefined || tiersLoading) {
-    return <div className="container fidelidad-page fidelidad-loading">Cargando tarjeta…</div>;
+    return (
+      <div className="fidelidad-page">
+        <FidelidadTopBar />
+        <div className="container fidelidad-loading">Cargando tarjeta…</div>
+      </div>
+    );
   }
 
   if (customer === null) {
     return (
-      <div className="container fidelidad-page fidelidad-loading">
-        <p>No encontramos esta tarjeta de fidelidad.</p>
+      <div className="fidelidad-page">
+        <FidelidadTopBar />
+        <div className="container fidelidad-loading">
+          <p>No encontramos esta tarjeta de fidelidad.</p>
+        </div>
       </div>
     );
   }
@@ -120,6 +128,7 @@ export default function FidelidadPage() {
 
   return (
     <div className="fidelidad-page">
+      <FidelidadTopBar />
       <div className="container">
         <div
           className="loyalty-card-scene"
@@ -235,6 +244,16 @@ export default function FidelidadPage() {
           })}
         </div>
       </div>
+    </div>
+  );
+}
+
+function FidelidadTopBar() {
+  return (
+    <div className="container fidelidad-top-bar">
+      <Link to="/" className="fidelidad-back-link">
+        ← Volver a la tienda
+      </Link>
     </div>
   );
 }

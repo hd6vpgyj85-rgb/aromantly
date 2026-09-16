@@ -1,8 +1,27 @@
 .fidelidad-page {
   min-height: 100vh;
-  padding-top: 48px;
+  padding-top: 20px;
   padding-bottom: 80px;
   background: radial-gradient(circle at 50% 0%, rgba(255, 122, 26, 0.1), transparent 60%);
+}
+
+.fidelidad-top-bar {
+  margin-bottom: 28px;
+}
+
+.fidelidad-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.fidelidad-back-link:hover {
+  color: var(--color-accent-neon);
+  transform: translateX(-2px);
 }
 
 .fidelidad-loading {
