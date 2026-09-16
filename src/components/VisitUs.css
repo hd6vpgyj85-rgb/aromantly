@@ -1,0 +1,50 @@
+.visit-us {
+  padding: 48px 0;
+}
+
+.visit-us-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visit-us-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #111a0a 0%, #0a0a0a 70%), url("/images/tienda-interior.jpg") center/cover no-repeat;
+  border: 1px solid var(--color-border);
+}
+
+.visit-us-info h2 {
+  font-size: 24px;
+}
+
+.visit-us-address {
+  margin-top: 12px;
+  color: var(--color-text);
+  font-size: 15px;
+}
+
+.visit-us-schedule {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (min-width: 768px) {
+  .visit-us-grid {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .visit-us-photo,
+  .visit-us-info {
+    flex: 1;
+  }
+}

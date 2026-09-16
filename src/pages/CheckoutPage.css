@@ -1,0 +1,165 @@
+.checkout-page {
+  padding: 28px 0 60px;
+  max-width: 640px;
+}
+
+.checkout-page h1 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.checkout-section h2 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.checkout-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.checkout-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.checkout-checkbox input {
+  width: auto;
+}
+
+.checkout-review {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.checkout-stars {
+  display: flex;
+  gap: 6px;
+  font-size: 22px;
+}
+
+.checkout-stars button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.checkout-summary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.checkout-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.checkout-error {
+  color: #ff6b6b;
+  font-size: 13px;
+}
+
+.checkout-success {
+  padding: 60px 0;
+  text-align: center;
+  max-width: 480px;
+}
+
+.checkout-success h1 {
+  font-size: 26px;
+}
+
+.checkout-success p {
+  color: var(--color-text-muted);
+  margin: 12px 0 28px;
+  font-size: 14px;
+}
+
+.loyalty-qr-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: 0 0 40px rgba(126, 211, 33, 0.15);
+}
+
+.loyalty-qr-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--color-accent-neon);
+  margin-bottom: 16px;
+}
+
+.loyalty-qr-image {
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+}
+
+.loyalty-qr-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.loyalty-qr-actions .btn {
+  flex: 1;
+}
+
+.checkout-success-home {
+  display: inline-block;
+  margin-top: 28px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  text-decoration: underline;
+}

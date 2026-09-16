@@ -1,0 +1,84 @@
+.hero {
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  background: radial-gradient(circle at 30% 20%, rgba(126, 211, 33, 0.14), transparent 55%), var(--color-bg)
+    url("/images/hero-perfumes.jpg") center/cover no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0.95) 90%);
+}
+
+.hero-content {
+  position: relative;
+  padding: 100px 20px 60px;
+  max-width: 640px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(126, 211, 33, 0.12);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent-neon);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.hero-content h1 {
+  font-size: 34px;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 460px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.hero-stars {
+  color: var(--color-accent);
+  letter-spacing: 2px;
+}
+
+@media (min-width: 640px) {
+  .hero-actions {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 640px;
+  }
+
+  .hero-content h1 {
+    font-size: 52px;
+  }
+}
