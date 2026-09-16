@@ -1,6 +1,7 @@
 .hero {
   position: relative;
-  min-height: 560px;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   background: radial-gradient(circle at 30% 20%, rgba(255, 122, 26, 0.14), transparent 55%), var(--color-bg)
