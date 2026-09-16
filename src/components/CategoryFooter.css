@@ -8,7 +8,10 @@
 .category-footer-photo {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #111a0a 0%, #0a0a0a 60%), url("/images/tienda-interior.jpg") center/cover no-repeat;
+  /* El degradado anterior usaba colores sólidos (sin alpha), así que
+     tapaba la foto por completo en vez de solo oscurecerla; el ::after
+     de abajo ya se encarga del contraste para el texto. */
+  background: url("/images/tienda-interior.jpg") center/cover no-repeat;
 }
 
 .category-footer-photo::after {

@@ -12,7 +12,9 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #1a1005 0%, #0a0a0a 70%),
+  /* Los colores del degradado deben llevar alpha (rgba): sin transparencia
+     tapaban la foto por completo en vez de solo darle un tinte oscuro. */
+  background: linear-gradient(135deg, rgba(26, 16, 5, 0.45) 0%, rgba(10, 10, 10, 0.65) 70%),
     url("/images/tienda-interior.jpg") center/cover no-repeat;
   border: 1px solid var(--color-border);
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease,
