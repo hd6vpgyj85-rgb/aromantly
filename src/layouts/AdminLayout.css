@@ -39,11 +39,16 @@
 .admin-header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .admin-header-icon {
   display: flex;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
   color: var(--color-text-muted);
 }
 
@@ -55,19 +60,21 @@
   width: 1px;
   height: 20px;
   background: var(--color-border);
+  flex-shrink: 0;
 }
 
-.admin-header-text-action {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
+@media (max-width: 360px) {
+  .admin-header-actions {
+    gap: 8px;
+  }
 
-.admin-header-text-action:hover {
-  color: var(--color-text);
+  .admin-header-bar {
+    padding: 0 12px;
+  }
+
+  .admin-logo {
+    font-size: 14px;
+  }
 }
 
 .admin-main {

@@ -53,11 +53,32 @@ export default function AdminLayout() {
 
             <span className="admin-header-separator" />
 
-            <a href="/" target="_blank" rel="noopener noreferrer" className="admin-header-text-action">
-              Ver sitio
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-header-icon"
+              title="Ver sitio"
+              aria-label="Ver sitio"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
             </a>
-            <button type="button" className="admin-header-text-action" onClick={signOut}>
-              Cerrar sesión
+            <button
+              type="button"
+              className="admin-header-icon"
+              title="Cerrar sesión"
+              aria-label="Cerrar sesión"
+              onClick={signOut}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
             </button>
           </div>
         </div>
