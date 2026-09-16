@@ -32,7 +32,7 @@ export default function TopProducts() {
     <section className="top-products" id="top-perfumes">
       <div className="container">
         <h2>Top productos de la semana</h2>
-        <div className="top-products-grid">
+        <div className="top-products-grid stagger-reveal">
           {topThree.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

@@ -11,12 +11,19 @@ export default function Accordion({ title, children, defaultOpen = false }: Acco
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="accordion">
-      <button type="button" className="accordion-trigger" onClick={() => setIsOpen((v) => !v)}>
+    <div className={`accordion ${isOpen ? "accordion-open" : ""}`}>
+      <button
+        type="button"
+        className="accordion-trigger"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((v) => !v)}
+      >
         <span>{title}</span>
         <span className={`accordion-chevron ${isOpen ? "accordion-chevron-open" : ""}`}>⌄</span>
       </button>
-      {isOpen && <div className="accordion-content">{children}</div>}
+      <div className="accordion-panel" aria-hidden={!isOpen}>
+        <div className="accordion-content">{children}</div>
+      </div>
     </div>
   );
 }

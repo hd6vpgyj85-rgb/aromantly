@@ -82,6 +82,11 @@
 .carousel-arrow:hover {
   border-color: var(--color-accent);
   color: var(--color-accent-neon);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-arrow:active {
+  transform: translateY(-50%) scale(0.92);
 }
 
 .carousel-arrow-left {
@@ -106,6 +111,12 @@
   background: var(--color-border);
   border: none;
   padding: 0;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease,
+    border-radius 0.3s ease;
+}
+
+.carousel-dot:hover {
+  background: var(--color-text-muted);
 }
 
 .carousel-dot-active {
@@ -118,10 +129,12 @@
   text-align: center;
   margin-top: 20px;
   padding: 0 20px;
+  animation: slide-up-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .featured-carousel-tag {
   display: inline-block;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   background: var(--color-accent);
   color: #0a0a0a;
   font-family: var(--font-display);

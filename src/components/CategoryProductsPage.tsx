@@ -9,6 +9,7 @@ import ProductFilters from "./ProductFilters";
 import ProductGrid from "./ProductGrid";
 import FeaturedCarousel from "./FeaturedCarousel";
 import CategoryFooter from "./CategoryFooter";
+import Reveal from "./Reveal";
 
 export interface CategoryPageConfig {
   title: string;
@@ -20,7 +21,7 @@ export interface CategoryPageConfig {
 }
 
 export default function CategoryProductsPage({ config }: { config: CategoryPageConfig }) {
-  const { products } = useProducts();
+  const { products, isLoading } = useProducts();
   const [searchParams] = useSearchParams();
 
   const baseProducts = useMemo(() => products.filter(config.baseFilter), [products, config]);
@@ -65,9 +66,13 @@ export default function CategoryProductsPage({ config }: { config: CategoryPageC
         image={config.bannerImage ?? "/images/category-banner.jpg"}
       />
       <div className="container">
-        <CategoryHero title={config.title} subtitle={config.subtitle} />
-        <ProductFilters options={filterOptions} activeFilter={activeFilter} onChange={setActiveFilter} />
-        <ProductGrid products={filteredProducts} />
+        <Reveal direction="up">
+          <CategoryHero title={config.title} subtitle={config.subtitle} />
+        </Reveal>
+        <Reveal direction="up" delay={80}>
+          <ProductFilters options={filterOptions} activeFilter={activeFilter} onChange={setActiveFilter} />
+        </Reveal>
+        <ProductGrid products={filteredProducts} isLoading={isLoading} />
       </div>
       <FeaturedCarousel />
       <CategoryFooter />

@@ -200,6 +200,157 @@ h4 {
   animation: pulse-feedback 0.3s ease;
 }
 
+/* ── Entradas reutilizables ─────────────────────────────── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+.anim-slide-up {
+  animation: slide-up-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-scale-in {
+  animation: scale-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-pop-in {
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Escalonado genérico para listas y grids ────────────── */
+
+.stagger > * {
+  animation: slide-up-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stagger > *:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.18s;
+}
+.stagger > *:nth-child(7) {
+  animation-delay: 0.21s;
+}
+.stagger > *:nth-child(8) {
+  animation-delay: 0.24s;
+}
+.stagger > *:nth-child(9) {
+  animation-delay: 0.27s;
+}
+.stagger > *:nth-child(10) {
+  animation-delay: 0.3s;
+}
+.stagger > *:nth-child(n + 11) {
+  animation-delay: 0.33s;
+}
+
+/* ── Esqueleto de carga (shimmer) ───────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-alt) 37%,
+    var(--color-surface) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Inputs con transición de foco ──────────────────────── */
+
+input,
+select,
+textarea {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.16);
+}
+
+/* ── Imágenes que aparecen al cargar ────────────────────── */
+
+@keyframes img-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

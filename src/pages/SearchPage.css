@@ -23,8 +23,17 @@
   border-color: var(--color-accent);
 }
 
+.search-page h1 {
+  animation: slide-up-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.search-input {
+  animation: slide-up-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
 .search-hint {
   margin-top: 24px;
   color: var(--color-text-muted);
   font-size: 14px;
+  animation: fade-in 0.4s ease 0.18s both;
 }

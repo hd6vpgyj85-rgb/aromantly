@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { useParams } from "react-router-dom";
 import { useLoyalty } from "../contexts/LoyaltyContext";
 import { getWhatsAppUrl } from "../data/store";
@@ -106,7 +106,11 @@ export default function FidelidadPage() {
             {sortedTiers.map((tier, index) => {
               const reached = customer.purchasesCount >= tier.purchasesRequired;
               return (
-                <div key={tier.id} className="loyalty-tracker-step">
+                <div
+                  key={tier.id}
+                  className="loyalty-tracker-step"
+                  style={{ "--step-delay": `${0.45 + index * 0.12}s` } as CSSProperties}
+                >
                   {index > 0 && (
                     <span className={`loyalty-tracker-line ${reached ? "loyalty-tracker-line-active" : ""}`} />
                   )}
@@ -121,12 +125,16 @@ export default function FidelidadPage() {
 
         <div className="loyalty-rewards">
           <h2>Recompensas</h2>
-          {sortedTiers.map((tier) => {
+          {sortedTiers.map((tier, index) => {
             const unlocked = customer.purchasesCount >= tier.purchasesRequired;
             const claim = claims.find((c) => c.tierId === tier.id);
 
             return (
-              <div key={tier.id} className={`loyalty-reward-row ${unlocked ? "" : "loyalty-reward-locked"}`}>
+              <div
+                key={tier.id}
+                className={`loyalty-reward-row ${unlocked ? "" : "loyalty-reward-locked"}`}
+                style={{ "--row-delay": `${0.1 + index * 0.08}s` } as CSSProperties}
+              >
                 <div>
                   <span className="loyalty-reward-requirement">{tier.purchasesRequired} compras</span>
                   <p className="loyalty-reward-description">{tier.rewardDescription}</p>

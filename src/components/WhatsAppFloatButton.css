@@ -15,6 +15,23 @@
   touch-action: none;
   user-select: none;
   cursor: grab;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wa-float-btn:hover {
+  transform: scale(1.08);
+}
+
+.wa-float-btn:active {
+  transform: scale(0.94);
+}
+
+.wa-float-btn svg {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wa-float-btn:hover svg {
+  transform: rotate(-8deg) scale(1.05);
 }
 
 .wa-float-btn:active {

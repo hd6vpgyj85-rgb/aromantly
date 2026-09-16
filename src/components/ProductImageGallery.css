@@ -30,6 +30,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: img-fade-in 0.5s ease both;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-gallery-slide:hover img {
+  transform: scale(1.04);
 }
 
 .product-gallery-placeholder {
@@ -64,6 +70,13 @@
   border: 2px solid var(--color-border);
   padding: 0;
   background: none;
+  opacity: 0.6;
+  transition: border-color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.product-gallery-thumb:hover {
+  opacity: 1;
+  transform: translateY(-2px);
 }
 
 .product-gallery-thumb img {
@@ -74,6 +87,7 @@
 
 .product-gallery-thumb-active {
   border-color: var(--color-accent);
+  opacity: 1;
 }
 
 .lightbox {
@@ -84,6 +98,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: fade-in 0.25s ease both;
+}
+
+.lightbox .lightbox-slide img {
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .lightbox-track {

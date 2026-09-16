@@ -14,18 +14,41 @@
 }
 
 .level-card {
+  position: relative;
+  overflow: hidden;
   text-align: left;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
   color: var(--color-text);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+}
+
+.level-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(circle at 20% 0%, rgba(255, 122, 26, 0.12), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .level-card:hover {
   border-color: var(--color-accent);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.level-card:hover::after {
+  opacity: 1;
+}
+
+.level-card:active {
+  transform: translateY(-1px) scale(0.99);
 }
 
 .level-card-number {
@@ -35,12 +58,14 @@
   font-weight: 900;
   color: #ffffff;
   text-shadow: 0 0 12px var(--color-accent), 0 0 28px rgba(255, 122, 26, 0.7);
+  transition: text-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .level-card h3 {
   font-size: 18px;
   margin: 10px 0 6px;
   color: var(--color-text);
+  transition: color 0.25s ease;
 }
 
 .level-card p {
@@ -49,8 +74,33 @@
   line-height: 1.5;
 }
 
+.level-card:hover .level-card-number {
+  transform: translateX(4px);
+  text-shadow: 0 0 18px var(--color-accent), 0 0 42px rgba(255, 122, 26, 0.9);
+}
+
+.level-card:hover h3 {
+  color: var(--color-accent-neon);
+}
+
 @media (min-width: 768px) {
   .levels-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (hover: none) {
+  .level-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--color-border);
+  }
+
+  .level-card:hover .level-card-number {
+    transform: none;
+  }
+
+  .level-card:hover h3 {
+    color: var(--color-text);
   }
 }

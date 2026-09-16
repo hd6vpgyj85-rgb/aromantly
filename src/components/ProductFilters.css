@@ -20,16 +20,29 @@
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
 }
 
 .filter-chip:hover {
   border-color: var(--color-accent);
   color: var(--color-text);
+  transform: translateY(-2px);
 }
 
 .filter-chip-active {
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: #0a0a0a;
+  box-shadow: 0 4px 14px rgba(255, 122, 26, 0.3);
+}
+
+.filter-chip-active:hover {
+  color: #0a0a0a;
+}
+
+@media (hover: none) {
+  .filter-chip:hover {
+    transform: none;
+  }
 }
