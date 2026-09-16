@@ -112,6 +112,8 @@ export interface Customer {
   name: string;
   phone: string;
   token: string;
+  /** Código de 6 caracteres para que el cliente entre a su tarjeta con su WhatsApp + este código. */
+  accessCode: string;
   purchasesCount: number;
   notes?: string;
   createdAt: string;

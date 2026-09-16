@@ -230,11 +230,23 @@ function CustomerQrModal({ customer, onClose }: { customer: Customer; onClose: (
     );
   }, [fidelidadUrl]);
 
+  const [copiedCode, setCopiedCode] = useState(false);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(fidelidadUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard no disponible
+    }
+  };
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(customer.accessCode);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
     } catch {
       // clipboard no disponible
     }
@@ -252,13 +264,31 @@ function CustomerQrModal({ customer, onClose }: { customer: Customer; onClose: (
     <div className="admin-modal-overlay" onClick={onClose}>
       <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
         <div className="admin-modal-header">
-          <h2>QR de {customer.name}</h2>
+          <h2>Tarjeta de {customer.name}</h2>
           <button type="button" className="admin-modal-close" onClick={onClose}>
             ×
           </button>
         </div>
+
+        <div className="customer-qr-info">
+          <span>
+            <strong>WhatsApp:</strong> {customer.phone}
+          </span>
+          <span>
+            <strong>Código de acceso:</strong> {customer.accessCode}
+          </span>
+          {customer.notes && (
+            <span>
+              <strong>Notas:</strong> {customer.notes}
+            </span>
+          )}
+        </div>
+
         {qrDataUrl && <img src={qrDataUrl} alt="Código QR" style={{ width: "100%", borderRadius: 12 }} />}
         <div className="admin-inline-actions">
+          <button type="button" className="btn btn-secondary" onClick={handleCopyCode}>
+            {copiedCode ? "¡Copiado!" : "Copiar código"}
+          </button>
           <button type="button" className="btn btn-secondary" onClick={handleCopy}>
             {copied ? "¡Copiado!" : "Copiar link"}
           </button>

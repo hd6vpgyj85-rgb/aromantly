@@ -251,10 +251,15 @@ create table if not exists customers (
   name text not null,
   phone text not null,
   token text not null unique default encode(gen_random_bytes(16), 'hex'),
+  access_code text unique,
   purchases_count integer not null default 0 check (purchases_count >= 0),
   notes text,
   created_at timestamptz not null default now()
 );
+
+alter table customers add column if not exists access_code text;
+alter table customers drop constraint if exists customers_access_code_key;
+alter table customers add constraint customers_access_code_key unique (access_code);
 
 alter table customers enable row level security;
 
@@ -266,6 +271,48 @@ create policy "customers_all_authenticated" on customers
   with check (true);
 
 -- Sin policy de select para anon: la tabla no se expone directamente.
+
+-- Código de acceso: 6 caracteres alfanuméricos, para que el cliente entre a
+-- su tarjeta de fidelidad con su WhatsApp + este código, sin usar su token
+-- largo. Se genera solo si no viene definido (nuevos clientes) y se
+-- rellena para los que ya existían antes de este cambio.
+create or replace function generate_customer_code()
+returns text
+language plpgsql
+as $$
+declare
+  v_alphabet text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  v_code text;
+begin
+  loop
+    v_code := '';
+    for i in 1..6 loop
+      v_code := v_code || substr(v_alphabet, floor(random() * length(v_alphabet) + 1)::int, 1);
+    end loop;
+    exit when not exists (select 1 from customers where access_code = v_code);
+  end loop;
+  return v_code;
+end;
+$$;
+
+create or replace function set_customer_code()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.access_code is null then
+    new.access_code := generate_customer_code();
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_set_customer_code on customers;
+create trigger trg_set_customer_code
+before insert on customers
+for each row execute function set_customer_code();
+
+update customers set access_code = generate_customer_code() where access_code is null;
 
 create table if not exists loyalty_tiers (
   id uuid primary key default gen_random_uuid(),
@@ -320,21 +367,51 @@ create policy "loyalty_claims_select_authenticated" on loyalty_claims
 -- FUNCIONES DE FIDELIDAD (security definer)
 -- ───────────────────────────────────────────────────────────────────
 
+drop function if exists get_customer_by_token(text);
+
 create or replace function get_customer_by_token(p_token text)
-returns table(id uuid, name text, purchases_count integer)
+returns table(id uuid, name text, purchases_count integer, access_code text)
 language plpgsql
 security definer
 set search_path = public
 as $$
 begin
   return query
-    select c.id, c.name, c.purchases_count
+    select c.id, c.name, c.purchases_count, c.access_code
     from customers c
     where c.token = p_token;
 end;
 $$;
 
 grant execute on function get_customer_by_token(text) to anon, authenticated;
+
+-- Acceso de clientes a su tarjeta de fidelidad desde el mismo formulario de
+-- login del admin: número de WhatsApp + código de acceso en vez de
+-- correo/contraseña. No toca la autenticación de Supabase Auth del admin.
+create or replace function authenticate_customer_by_code(p_phone text, p_code text)
+returns table(token text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_normalized text;
+begin
+  v_normalized := right(regexp_replace(coalesce(p_phone, ''), '\D', '', 'g'), 10);
+
+  if v_normalized = '' or p_code is null or trim(p_code) = '' then
+    return;
+  end if;
+
+  return query
+    select c.token
+    from customers c
+    where right(regexp_replace(c.phone, '\D', '', 'g'), 10) = v_normalized
+      and c.access_code = upper(trim(p_code));
+end;
+$$;
+
+grant execute on function authenticate_customer_by_code(text, text) to anon, authenticated;
 
 create or replace function get_or_create_customer_for_checkout(p_name text, p_phone text)
 returns table(id uuid, token text)

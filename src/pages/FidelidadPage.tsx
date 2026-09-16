@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useParams } from "react-router-dom";
+import QRCode from "qrcode";
 import { useLoyalty } from "../contexts/LoyaltyContext";
 import { getWhatsAppUrl } from "../data/store";
 import "./FidelidadPage.css";
@@ -8,6 +9,7 @@ interface CustomerData {
   id: string;
   name: string;
   purchasesCount: number;
+  accessCode: string;
 }
 
 interface ClaimData {
@@ -24,6 +26,9 @@ export default function FidelidadPage() {
   const [customer, setCustomer] = useState<CustomerData | null | undefined>(undefined);
   const [claims, setClaims] = useState<ClaimData[]>([]);
   const [isRequesting, setIsRequesting] = useState<string | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const flipStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const loadClaims = useCallback(async () => {
     if (!token) return;
@@ -36,6 +41,38 @@ export default function FidelidadPage() {
     getCustomerByToken(token).then((result) => setCustomer(result));
     loadClaims();
   }, [token, getCustomerByToken, loadClaims]);
+
+  useEffect(() => {
+    if (!token) return;
+    const fidelidadUrl = `${window.location.origin}/fidelidad/${token}`;
+    QRCode.toDataURL(fidelidadUrl, { width: 260, margin: 1, color: { dark: "#0a0a0a", light: "#f5f5f3" } }).then(
+      setQrDataUrl
+    );
+  }, [token]);
+
+  const handleCardPointerDown = (e: ReactPointerEvent) => {
+    flipStartRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleCardPointerUp = (e: ReactPointerEvent) => {
+    const start = flipStartRef.current;
+    flipStartRef.current = null;
+    if (!start) return;
+
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    // Toque casi sin movimiento (clic/tap) o deslizamiento horizontal claro
+    // voltean la tarjeta; un movimiento sobre todo vertical es scroll de la
+    // página, no un intento de voltear.
+    const isTap = absDx < 8 && absDy < 8;
+    const isHorizontalSwipe = absDx > 30 && absDx > absDy * 1.5;
+    if (isTap || isHorizontalSwipe) {
+      setIsFlipped((v) => !v);
+    }
+  };
 
   if (customer === undefined || tiersLoading) {
     return <div className="container fidelidad-page fidelidad-loading">Cargando tarjeta…</div>;
@@ -84,44 +121,78 @@ export default function FidelidadPage() {
   return (
     <div className="fidelidad-page">
       <div className="container">
-        <div className="loyalty-card">
-          <div className="loyalty-card-crown">♛</div>
-          <span className="loyalty-card-name">{customer.name}</span>
-          <span className="loyalty-card-tier">
-            Nivel {currentTierIndex} · {customer.purchasesCount} compras
-          </span>
+        <div
+          className="loyalty-card-scene"
+          onPointerDown={handleCardPointerDown}
+          onPointerUp={handleCardPointerUp}
+          role="button"
+          tabIndex={0}
+          aria-label="Voltear tarjeta para ver tu código de acceso"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsFlipped((v) => !v);
+            }
+          }}
+        >
+          <div className={`loyalty-card-flipper ${isFlipped ? "is-flipped" : ""}`}>
+            <div className="loyalty-card loyalty-card-front">
+              <div className="loyalty-card-crown">♛</div>
+              <span className="loyalty-card-name">{customer.name}</span>
+              <span className="loyalty-card-tier">
+                Nivel {currentTierIndex} · {customer.purchasesCount} compras
+              </span>
 
-          <div className="loyalty-progress-bar">
-            <div className="loyalty-progress-fill" style={{ width: `${progressPercent}%` }} />
-          </div>
-          {nextTier ? (
-            <span className="loyalty-progress-label">
-              {nextTier.purchasesRequired - customer.purchasesCount} compras para tu siguiente nivel
-            </span>
-          ) : (
-            <span className="loyalty-progress-label">¡Alcanzaste el nivel máximo!</span>
-          )}
+              <div className="loyalty-progress-bar">
+                <div className="loyalty-progress-fill" style={{ width: `${progressPercent}%` }} />
+              </div>
+              {nextTier ? (
+                <span className="loyalty-progress-label">
+                  {nextTier.purchasesRequired - customer.purchasesCount} compras para tu siguiente nivel
+                </span>
+              ) : (
+                <span className="loyalty-progress-label">¡Alcanzaste el nivel máximo!</span>
+              )}
 
-          <div className="loyalty-tracker">
-            {sortedTiers.map((tier, index) => {
-              const reached = customer.purchasesCount >= tier.purchasesRequired;
-              return (
-                <div
-                  key={tier.id}
-                  className="loyalty-tracker-step"
-                  style={{ "--step-delay": `${0.45 + index * 0.12}s` } as CSSProperties}
-                >
-                  {index > 0 && (
-                    <span className={`loyalty-tracker-line ${reached ? "loyalty-tracker-line-active" : ""}`} />
-                  )}
-                  <span className={`loyalty-tracker-circle ${reached ? "loyalty-tracker-circle-active" : ""}`}>
-                    {reached ? "✓" : index + 1}
-                  </span>
-                </div>
-              );
-            })}
+              <div className="loyalty-tracker">
+                {sortedTiers.map((tier, index) => {
+                  const reached = customer.purchasesCount >= tier.purchasesRequired;
+                  return (
+                    <div
+                      key={tier.id}
+                      className="loyalty-tracker-step"
+                      style={{ "--step-delay": `${0.45 + index * 0.12}s` } as CSSProperties}
+                    >
+                      {index > 0 && (
+                        <span className={`loyalty-tracker-line ${reached ? "loyalty-tracker-line-active" : ""}`} />
+                      )}
+                      <span className={`loyalty-tracker-circle ${reached ? "loyalty-tracker-circle-active" : ""}`}>
+                        {reached ? "✓" : index + 1}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="loyalty-card loyalty-card-back">
+              <span className="loyalty-card-back-title">Tu código de acceso</span>
+              {qrDataUrl && (
+                <img
+                  src={qrDataUrl}
+                  alt="Código QR de tu tarjeta"
+                  className="loyalty-card-qr"
+                  draggable={false}
+                />
+              )}
+              <span className="loyalty-card-access-code">{customer.accessCode}</span>
+              <p className="loyalty-card-back-hint">
+                Entra con tu WhatsApp y este código desde el acceso de la tienda si pierdes este link.
+              </p>
+            </div>
           </div>
         </div>
+        <span className="loyalty-card-flip-tip">Toca o desliza la tarjeta para ver tu código →</span>
 
         <div className="loyalty-rewards">
           <h2>Recompensas</h2>
