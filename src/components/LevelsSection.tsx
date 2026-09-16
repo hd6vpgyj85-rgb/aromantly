@@ -14,7 +14,7 @@ export default function LevelsSection() {
   return (
     <section className="levels-section">
       <div className="container">
-        <h2>Elige tu nivel</h2>
+        <h2>Elige tu perfume</h2>
         <div className="levels-grid stagger-reveal">
           {LEVEL_OPTIONS.map((level) => (
             <button
