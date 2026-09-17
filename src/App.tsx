@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import CartToast from "./components/CartToast";
+import useTabTitleTease from "./hooks/useTabTitleTease";
 
 import HomeLayout from "./layouts/HomeLayout";
 import CategoryLayout from "./layouts/CategoryLayout";
@@ -37,9 +39,12 @@ import CustomersPage from "./pages/admin/CustomersPage";
 import HomeBannerPage from "./pages/admin/HomeBannerPage";
 
 export default function App() {
+  useTabTitleTease();
+
   return (
     <>
       <ScrollToTop />
+      <CartToast />
       <Routes>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<HomePage />} />

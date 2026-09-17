@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import { formatLevels } from "../data/store";
 import { formatPrice } from "../utils/product";
+import PerfumeBottleArt from "../components/PerfumeBottleArt";
 import "./CartPage.css";
 
 export default function CartPage() {
@@ -10,8 +11,9 @@ export default function CartPage() {
   if (lines.length === 0) {
     return (
       <div className="container cart-page cart-empty">
-        <h1>Tu carrito</h1>
-        <p>Aún no has agregado perfumes a tu carrito.</p>
+        <PerfumeBottleArt />
+        <h1>Tu carrito está vacío</h1>
+        <p>Todavía no eliges tu aroma. Date una vuelta, algo te va a llamar.</p>
         <Link to="/perfumes" className="btn btn-primary">
           Ver perfumes
         </Link>

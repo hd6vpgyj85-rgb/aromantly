@@ -111,6 +111,9 @@
 
 .product-detail-add {
   margin-bottom: 8px;
+  /* Ancla para que las gotitas de la rociada salgan desde el botón. */
+  position: relative;
+  overflow: visible;
 }
 
 .product-detail-cart-link {

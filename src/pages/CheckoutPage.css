@@ -168,6 +168,23 @@ textarea {
   padding-bottom: 60px;
   text-align: center;
   max-width: 480px;
+  position: relative;
+}
+
+/* Rociada de celebración justo arriba del "¡Pedido enviado!". */
+.checkout-success-spray {
+  position: relative;
+  height: 0;
+}
+
+.checkout-success-spray .spritz {
+  top: 0;
+  /* Más grande y más lenta que la del botón: aquí sí es para celebrar. */
+  scale: 1.6;
+}
+
+.checkout-success-spray .spritz-drop {
+  animation-duration: 1.2s;
 }
 
 .checkout-success h1 {

@@ -9,6 +9,7 @@ import { useLoyalty } from "../contexts/LoyaltyContext";
 import { getWhatsAppUrl, formatLevels } from "../data/store";
 import { formatPrice } from "../utils/product";
 import { compressImage } from "../utils/image";
+import SpritzBurst from "../components/SpritzBurst";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "../lib/supabase";
 import type { OrderItem } from "../types";
 import "./CheckoutPage.css";
@@ -224,6 +225,9 @@ export default function CheckoutPage() {
 
     return (
       <div className="container checkout-success">
+        <div className="checkout-success-spray" aria-hidden="true">
+          <SpritzBurst />
+        </div>
         <h1>¡Pedido enviado!</h1>
         <p>Abrimos WhatsApp con los detalles de tu pedido. Confirma ahí para coordinar tu entrega y pago.</p>
 

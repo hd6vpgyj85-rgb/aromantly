@@ -29,12 +29,31 @@ body {
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Sin el flash gris de iOS al tocar: el feedback lo dan las animaciones. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* El texto seleccionado también lleva la marca. */
+::selection {
+  background: var(--color-accent);
+  color: #0a0a0a;
+}
+
+/* Anillo de foco solo para quien navega con teclado, nunca al hacer clic. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 a {
@@ -77,6 +96,12 @@ h4 {
   text-transform: uppercase;
   letter-spacing: -0.01em;
   margin: 0;
+  /* Reparte las líneas parejo en vez de dejar una palabra suelta abajo. */
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 .btn {
@@ -151,6 +176,54 @@ h4 {
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
+
+/* ── Animaciones con temática de perfumería ─────────────── */
+
+/* Estela (sillage): partículas que suben y se desvanecen, como el
+   rastro de una fragancia en el aire. */
+@keyframes sillage-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  15% {
+    opacity: var(--sillage-opacity, 0.5);
+  }
+  70% {
+    opacity: var(--sillage-opacity, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--sillage-drift, 14px), -120px, 0) scale(1.35);
+  }
+}
+
+/* Rociada (spritz): gotitas que salen disparadas en abanico. */
+@keyframes spritz-burst {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spritz-x, 0), var(--spritz-y, -26px)) scale(0.35);
+  }
+}
+
+/* Reflejo que cruza una superficie, como el vidrio de un frasco. */
+@keyframes glass-shine {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(320%) skewX(-18deg);
+  }
 }
 
 @keyframes page-fade-in {

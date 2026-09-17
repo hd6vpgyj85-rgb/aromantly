@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ProductLevel } from "../types";
 import { useProducts } from "../contexts/ProductsContext";
 import { normalizeSearch } from "../utils/normalize";
@@ -14,6 +14,20 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [nivelFilter, setNivelFilter] = useState<ProductLevel | null>(null);
   const [marcaFilter, setMarcaFilter] = useState<string | null>(null);
+  const [hintIndex, setHintIndex] = useState(0);
+
+  // El placeholder va rotando entre marcas reales del catálogo, para que
+  // el cliente vea de una qué puede escribir.
+  const searchHints = useMemo(() => {
+    const brands = Array.from(new Set(products.map((p) => extractBrandFromName(p.name)).filter(Boolean)));
+    return brands.length > 0 ? brands.slice(0, 6) : ["una marca", "un perfume"];
+  }, [products]);
+
+  useEffect(() => {
+    if (searchHints.length < 2) return;
+    const timer = setInterval(() => setHintIndex((i) => (i + 1) % searchHints.length), 2600);
+    return () => clearInterval(timer);
+  }, [searchHints]);
 
   const nivelOptions = useMemo(
     () => LEVEL_OPTIONS.map((opt) => ({ type: "nivel" as const, value: opt.slug, label: opt.label })),
@@ -53,7 +67,7 @@ export default function SearchPage() {
         <input
           type="search"
           className="search-input"
-          placeholder="Buscar por nombre o marca..."
+          placeholder={`Busca "${searchHints[hintIndex] ?? ""}"...`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus

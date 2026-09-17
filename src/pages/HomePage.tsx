@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { getWhatsAppUrl } from "../data/store";
+import ScentTrail from "../components/ScentTrail";
+import CountUp from "../components/CountUp";
 import PromoBanner from "../components/PromoBanner";
 import LevelsSection from "../components/LevelsSection";
 import TopProducts from "../components/TopProducts";
@@ -14,6 +16,7 @@ export default function HomePage() {
     <>
       <section className="hero">
         <div className="hero-overlay" />
+        <ScentTrail />
         <div className="container hero-content">
           <span className="hero-badge hero-anim hero-anim-1">Especialistas en perfumes</span>
           <h1 className="hero-anim hero-anim-2">Encuentra la fragancia que te define</h1>
@@ -35,7 +38,9 @@ export default function HomePage() {
           </div>
           <div className="hero-rating hero-anim hero-anim-5">
             <span className="hero-stars">★★★★★</span>
-            <span>+500 clientes asesorados</span>
+            <span>
+              +<CountUp to={500} /> clientes asesorados
+            </span>
           </div>
         </div>
       </section>

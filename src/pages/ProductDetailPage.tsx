@@ -8,6 +8,7 @@ import { formatPrice, getDisplayDescription } from "../utils/product";
 import ProductImageGallery from "../components/ProductImageGallery";
 import Accordion from "../components/Accordion";
 import RelatedProducts from "../components/RelatedProducts";
+import SpritzBurst from "../components/SpritzBurst";
 import "./ProductDetailPage.css";
 
 export default function ProductDetailPage() {
@@ -19,6 +20,8 @@ export default function ProductDetailPage() {
   const product = id ? getProduct(id) : undefined;
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+  // Cambia en cada agregada para remontar la rociada y que vuelva a correr.
+  const [spritzKey, setSpritzKey] = useState(0);
   const hasRegisteredView = useRef(false);
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export default function ProductDetailPage() {
   const handleAddToCart = () => {
     addToCart(product, quantity);
     setJustAdded(true);
+    setSpritzKey((key) => key + 1);
     setTimeout(() => setJustAdded(false), 2000);
   };
 
@@ -85,6 +89,7 @@ export default function ProductDetailPage() {
             onClick={handleAddToCart}
           >
             {isOutOfStock ? "Agotado" : justAdded ? "¡Agregado!" : "Agregar al carrito"}
+            {spritzKey > 0 && <SpritzBurst key={spritzKey} />}
           </button>
 
           {justAdded && (

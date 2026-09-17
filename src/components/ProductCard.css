@@ -37,6 +37,34 @@
   transform: scale(1.07);
 }
 
+/* Reflejo que cruza la foto al pasar el mouse, como la luz sobre el
+   vidrio de un frasco. Solo en dispositivos con puntero real. */
+.product-card-image::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.13),
+    rgba(255, 171, 64, 0.1),
+    transparent
+  );
+  transform: translateX(-120%) skewX(-18deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+@media (hover: hover) {
+  .product-card:hover .product-card-image::after {
+    opacity: 1;
+    animation: glass-shine 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
 .product-card-image-placeholder {
   width: 100%;
   height: 100%;

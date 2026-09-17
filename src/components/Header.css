@@ -93,6 +93,27 @@
   padding: 0 4px;
 }
 
+/* Halo que late mientras haya algo en el carrito. Va en un ::after para
+   no pisar la animación de aparición (.badge-pop) del propio globito. */
+.site-header-cart-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: cart-badge-halo 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes cart-badge-halo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 26, 0.5);
+  }
+  55% {
+    box-shadow: 0 0 0 6px rgba(255, 122, 26, 0);
+  }
+}
+
 .site-header-burger {
   position: relative;
   z-index: 60;

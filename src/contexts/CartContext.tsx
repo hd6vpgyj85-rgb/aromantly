@@ -10,6 +10,14 @@ interface StoredLine {
   quantity: number;
 }
 
+/** Último producto agregado, para el aviso flotante del carrito. */
+export interface LastAdded {
+  product: Product;
+  quantity: number;
+  /** Cambia en cada agregada, incluso del mismo producto, para reanimar el aviso. */
+  key: number;
+}
+
 interface CartContextValue {
   lines: CartLine[];
   addToCart: (product: Product, quantity?: number) => void;
@@ -18,6 +26,7 @@ interface CartContextValue {
   clearCart: () => void;
   subtotal: number;
   itemCount: number;
+  lastAdded: LastAdded | null;
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
@@ -36,6 +45,7 @@ function readStoredLines(): StoredLine[] {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [lastAdded, setLastAdded] = useState<LastAdded | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const { registerCartAdd } = useAnalytics();
 
@@ -88,6 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = useCallback(
     (product: Product, quantity = 1) => {
+      setLastAdded({ product, quantity, key: Date.now() });
       setLines((prev) => {
         const existing = prev.find((l) => l.product.id === product.id);
         if (existing) {
@@ -127,7 +138,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ lines, addToCart, removeFromCart, setQuantity, clearCart, subtotal, itemCount }}
+      value={{ lines, addToCart, removeFromCart, setQuantity, clearCart, subtotal, itemCount, lastAdded }}
     >
       {children}
     </CartContext.Provider>

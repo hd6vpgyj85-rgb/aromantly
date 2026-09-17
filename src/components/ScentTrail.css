@@ -1,0 +1,25 @@
+.scent-trail {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scent-particle {
+  position: absolute;
+  bottom: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent-neon) 0%, rgba(255, 122, 26, 0) 70%);
+  opacity: 0;
+  animation-name: sillage-rise;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scent-trail {
+    display: none;
+  }
+}
