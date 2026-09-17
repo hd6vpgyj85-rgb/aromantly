@@ -1,16 +1,37 @@
 .hero {
   position: relative;
-  min-height: 560px;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
-  background: radial-gradient(circle at 30% 20%, rgba(126, 211, 33, 0.14), transparent 55%), var(--color-bg)
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* La foto vive en un ::before para poder animar transform (no background-size,
+   que no interpola bien contra la palabra clave cover). */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 122, 26, 0.14), transparent 55%),
     url("/images/hero-perfumes.jpg") center/cover no-repeat;
+  transform: scale(1.12);
+  animation: hero-zoom 16s ease-out forwards;
+}
+
+/* Zoom lento de fondo para que la portada no se sienta estática. */
+@keyframes hero-zoom {
+  to {
+    transform: scale(1);
+  }
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0.95) 90%);
+  animation: fade-in 0.8s ease both;
 }
 
 .hero-content {
@@ -19,9 +40,33 @@
   max-width: 640px;
 }
 
+.hero-anim {
+  animation: slide-up-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-anim-1 {
+  animation-delay: 0.1s;
+}
+
+.hero-anim-2 {
+  animation-delay: 0.22s;
+}
+
+.hero-anim-3 {
+  animation-delay: 0.34s;
+}
+
+.hero-anim-4 {
+  animation-delay: 0.46s;
+}
+
+.hero-anim-5 {
+  animation-delay: 0.58s;
+}
+
 .hero-badge {
   display: inline-block;
-  background: rgba(126, 211, 33, 0.12);
+  background: rgba(255, 122, 26, 0.12);
   border: 1px solid var(--color-accent);
   color: var(--color-accent-neon);
   font-size: 12px;
@@ -80,5 +125,12 @@
 
   .hero-content h1 {
     font-size: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before {
+    animation: none;
+    transform: none;
   }
 }

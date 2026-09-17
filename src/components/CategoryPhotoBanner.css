@@ -3,20 +3,31 @@
   min-height: 220px;
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
   background: var(--color-surface) center/cover no-repeat;
   border-bottom: 1px solid var(--color-border);
+  animation: fade-in 0.5s ease both;
 }
 
 .category-photo-banner-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 0.92) 100%);
+  animation: fade-in 0.6s ease both;
 }
 
 .category-photo-banner-content {
   position: relative;
   padding-bottom: 24px;
   padding-top: 100px;
+}
+
+.category-photo-banner-content h1 {
+  animation: slide-up-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.category-photo-banner-content p {
+  animation: slide-up-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
 .category-photo-banner-content h1 {

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import MobileNavOverlay from "./MobileNavOverlay";
 import "./Header.css";
 import "./HomeHeader.css";
 
@@ -19,6 +21,7 @@ const RIGHT_LINKS = [
 export default function HomeHeader() {
   const { itemCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useBodyScrollLock(isMenuOpen);
 
   return (
     <header className="site-header home-header">
@@ -68,12 +71,23 @@ export default function HomeHeader() {
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
             </svg>
-            {itemCount > 0 && <span className="site-header-cart-badge">{itemCount}</span>}
+            {itemCount > 0 && (
+              <span key={itemCount} className="site-header-cart-badge badge-pop">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+          <Link to="/admin" className="site-header-icon site-header-admin" aria-label="Panel de administración" title="Admin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="10" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
           </Link>
           <button
             type="button"
-            className="site-header-burger"
-            aria-label="Menú"
+            className={`site-header-burger ${isMenuOpen ? "site-header-burger-open" : ""}`}
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((v) => !v)}
           >
             <span />
@@ -83,18 +97,11 @@ export default function HomeHeader() {
         </div>
       </div>
 
-      <nav className={`site-header-nav home-header-nav-mobile ${isMenuOpen ? "site-header-nav-open" : ""}`}>
-        {[...LEFT_LINKS, ...RIGHT_LINKS].map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) => `site-header-link ${isActive ? "site-header-link-active" : ""}`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </nav>
+      <MobileNavOverlay
+        links={[...LEFT_LINKS, ...RIGHT_LINKS]}
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </header>
   );
 }

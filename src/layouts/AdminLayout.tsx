@@ -50,21 +50,51 @@ export default function AdminLayout() {
                 <line x1="7" y1="7" x2="7.01" y2="7" />
               </svg>
             </NavLink>
+            <NavLink to="/admin/banner" className="admin-header-icon" title="Contenido de inicio">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <circle cx="8.5" cy="10" r="1.5" />
+                <path d="m21 16-5-5-9 9" />
+              </svg>
+            </NavLink>
 
             <span className="admin-header-separator" />
 
-            <a href="/" target="_blank" rel="noopener noreferrer" className="admin-header-text-action">
-              Ver sitio
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-header-icon"
+              title="Ver sitio"
+              aria-label="Ver sitio"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
             </a>
-            <button type="button" className="admin-header-text-action" onClick={signOut}>
-              Cerrar sesión
+            <button
+              type="button"
+              className="admin-header-icon"
+              title="Cerrar sesión"
+              aria-label="Cerrar sesión"
+              onClick={signOut}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
             </button>
           </div>
         </div>
       </header>
 
       <main className="admin-main">
-        <Outlet />
+        <div key={location.pathname} className="page-transition">
+          <Outlet />
+        </div>
       </main>
 
       <nav className="admin-bottom-tabs">

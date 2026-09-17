@@ -1,12 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
-import type { LoyaltyClaim, LoyaltyTier } from "../types";
+import type { CouponScope, LoyaltyClaim, LoyaltyTier } from "../types";
 
 interface TierRow {
   id: string;
   purchases_required: number;
   reward_description: string;
   discount_percent: number | null;
+  coupon_scope: string | null;
   created_at: string;
 }
 
@@ -16,6 +17,7 @@ function rowToTier(row: TierRow): LoyaltyTier {
     purchasesRequired: row.purchases_required,
     rewardDescription: row.reward_description,
     discountPercent: row.discount_percent ?? undefined,
+    couponScope: (row.coupon_scope as CouponScope) ?? "cart",
     createdAt: row.created_at,
   };
 }
@@ -56,6 +58,7 @@ interface CreateTierInput {
   purchasesRequired: number;
   rewardDescription: string;
   discountPercent?: number;
+  couponScope?: CouponScope;
 }
 
 interface CustomerToken {
@@ -67,6 +70,7 @@ interface CustomerByToken {
   id: string;
   name: string;
   purchasesCount: number;
+  accessCode: string;
 }
 
 interface LoyaltyContextValue {
@@ -87,6 +91,8 @@ interface LoyaltyContextValue {
   getCustomerByToken: (token: string) => Promise<CustomerByToken | null>;
   requestClaim: (token: string, tierId: string) => Promise<void>;
   getClaimsByToken: (token: string) => Promise<LoyaltyClaim[]>;
+  /** Devuelve el token de la tarjeta si el WhatsApp + código coinciden, o null si no. */
+  loginCustomer: (phone: string, code: string) => Promise<string | null>;
 }
 
 const LoyaltyContext = createContext<LoyaltyContextValue | undefined>(undefined);
@@ -121,6 +127,7 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         purchases_required: input.purchasesRequired,
         reward_description: input.rewardDescription,
         discount_percent: input.discountPercent ?? null,
+        coupon_scope: input.couponScope ?? "cart",
       })
       .select()
       .single();
@@ -138,13 +145,24 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         purchases_required: updates.purchasesRequired,
         reward_description: updates.rewardDescription,
         discount_percent: updates.discountPercent ?? null,
+        coupon_scope: updates.couponScope ?? "cart",
       })
       .eq("id", id);
 
     if (error) throw error;
     setTiers((prev) =>
       prev
-        .map((t) => (t.id === id ? { ...t, purchasesRequired: updates.purchasesRequired, rewardDescription: updates.rewardDescription, discountPercent: updates.discountPercent } : t))
+        .map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                purchasesRequired: updates.purchasesRequired,
+                rewardDescription: updates.rewardDescription,
+                discountPercent: updates.discountPercent,
+                couponScope: updates.couponScope ?? "cart",
+              }
+            : t
+        )
         .sort((a, b) => a.purchasesRequired - b.purchasesRequired)
     );
   }, []);
@@ -188,7 +206,22 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
     const row = Array.isArray(data) ? data[0] : data;
     if (!row) return null;
-    return { id: row.id, name: row.name, purchasesCount: row.purchases_count } as CustomerByToken;
+    return {
+      id: row.id,
+      name: row.name,
+      purchasesCount: row.purchases_count,
+      accessCode: row.access_code,
+    } as CustomerByToken;
+  }, []);
+
+  const loginCustomer = useCallback(async (phone: string, code: string): Promise<string | null> => {
+    const { data, error } = await supabase.rpc("authenticate_customer_by_code", {
+      p_phone: phone,
+      p_code: code,
+    });
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    return row?.token ?? null;
   }, []);
 
   const requestClaim = useCallback(async (token: string, tierId: string) => {
@@ -228,6 +261,7 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         getCustomerByToken,
         requestClaim,
         getClaimsByToken,
+        loginCustomer,
       }}
     >
       {children}

@@ -1,21 +1,22 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LEVEL_OPTIONS } from "../data/store";
+import { useLevelImages } from "../contexts/LevelImagesContext";
 import "./LevelsSection.css";
-
-const LEVEL_DESCRIPTIONS: Record<string, string> = {
-  arabe: "Fragancias árabes intensas, de gran proyección y larga duración.",
-  disenador: "Firmas reconocidas mundialmente con un estilo atemporal.",
-  nicho: "Composiciones exclusivas para quienes buscan algo diferente.",
-};
 
 export default function LevelsSection() {
   const navigate = useNavigate();
+  const { images } = useLevelImages();
 
   return (
     <section className="levels-section">
       <div className="container">
-        <h2>Elige tu nivel</h2>
-        <div className="levels-grid">
+        <div className="levels-header">
+          <h2>Elige tu perfume</h2>
+          <Link to="/perfumes" className="levels-view-all">
+            Explorar aromas
+          </Link>
+        </div>
+        <div className="levels-grid stagger-reveal">
           {LEVEL_OPTIONS.map((level) => (
             <button
               key={level.slug}
@@ -23,9 +24,14 @@ export default function LevelsSection() {
               className="level-card"
               onClick={() => navigate(`/perfumes?nivel=${level.slug}`)}
             >
-              <span className="level-card-number">{level.number}</span>
+              <span className="level-card-photo">
+                {images[level.slug] ? (
+                  <img src={images[level.slug] as string} alt={level.label} loading="lazy" />
+                ) : (
+                  <span className="level-card-photo-placeholder" />
+                )}
+              </span>
               <h3>{level.label}</h3>
-              <p>{LEVEL_DESCRIPTIONS[level.slug]}</p>
             </button>
           ))}
         </div>

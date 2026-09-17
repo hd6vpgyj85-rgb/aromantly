@@ -1,0 +1,24 @@
+.spritz {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.spritz-drop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: var(--color-accent-neon);
+  box-shadow: 0 0 6px rgba(255, 171, 64, 0.8);
+  animation: spritz-burst 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spritz {
+    display: none;
+  }
+}
