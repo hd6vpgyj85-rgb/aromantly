@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { Link } from "react-router-dom";
 import { useProducts } from "../../contexts/ProductsContext";
 import { normalizeSearch } from "../../utils/normalize";
@@ -50,7 +51,7 @@ export default function ProductsListPage() {
       setShowDeleteAll(false);
       setConfirmText("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo eliminar.");
+      setError(getErrorMessage(err, "No se pudo eliminar."));
     } finally {
       setIsDeletingAll(false);
     }
@@ -61,7 +62,7 @@ export default function ProductsListPage() {
     try {
       await deleteProduct(id);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "No se pudo eliminar el producto.");
+      alert(getErrorMessage(err, "No se pudo eliminar el producto."));
     }
   };
 

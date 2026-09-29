@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getErrorMessage } from "../utils/errors";
 import { Link, Navigate } from "react-router-dom";
 import QRCode from "qrcode";
 import { useCart } from "../contexts/CartContext";
@@ -206,7 +207,7 @@ export default function CheckoutPage() {
       clearCart();
       setSuccess({ qrDataUrl, fidelidadUrl });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ocurrió un error al procesar tu pedido.");
+      setError(getErrorMessage(err, "Ocurrió un error al procesar tu pedido."));
     } finally {
       setIsSubmitting(false);
     }

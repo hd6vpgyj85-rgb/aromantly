@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import Papa from "papaparse";
 import JSZip from "jszip";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +53,7 @@ export default function ProductsImportPage() {
       setDrafts(withDuplicates);
       setSelected(new Set(withDuplicates.filter((d) => !d.isPossibleDuplicate).map((d) => d.handle)));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo leer el archivo.");
+      setError(getErrorMessage(err, "No se pudo leer el archivo."));
     } finally {
       setIsParsing(false);
     }
@@ -139,7 +140,7 @@ export default function ProductsImportPage() {
       await importProducts(newProducts);
       navigate("/admin/productos");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo completar la importación.");
+      setError(getErrorMessage(err, "No se pudo completar la importación."));
     } finally {
       setIsImporting(false);
       setProgress("");

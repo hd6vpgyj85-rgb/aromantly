@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { useHomeBanner } from "../../contexts/HomeBannerContext";
 import { useLevelImages, type LevelImages } from "../../contexts/LevelImagesContext";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "../../lib/supabase";
@@ -47,7 +48,7 @@ export default function HomeBannerPage() {
       const { data } = supabase.storage.from(PRODUCT_IMAGES_BUCKET).getPublicUrl(path);
       setLevelDraft((prev) => ({ ...prev, [slug]: data.publicUrl }));
     } catch (err) {
-      setLevelError(err instanceof Error ? err.message : "No se pudo subir la imagen.");
+      setLevelError(getErrorMessage(err, "No se pudo subir la imagen."));
     } finally {
       setUploadingLevel(null);
     }
@@ -66,7 +67,7 @@ export default function HomeBannerPage() {
       setLevelSaved(true);
       setTimeout(() => setLevelSaved(false), 2500);
     } catch (err) {
-      setLevelError(err instanceof Error ? err.message : "No se pudieron guardar los cambios.");
+      setLevelError(getErrorMessage(err, "No se pudieron guardar los cambios."));
     } finally {
       setIsSavingLevels(false);
     }
@@ -91,7 +92,7 @@ export default function HomeBannerPage() {
 
       setDraft((prev) => [...prev, ...uploadedUrls]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudieron subir las imágenes.");
+      setError(getErrorMessage(err, "No se pudieron subir las imágenes."));
     } finally {
       setIsUploading(false);
     }
@@ -140,7 +141,7 @@ export default function HomeBannerPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudieron guardar los cambios.");
+      setError(getErrorMessage(err, "No se pudieron guardar los cambios."));
     } finally {
       setIsSaving(false);
     }

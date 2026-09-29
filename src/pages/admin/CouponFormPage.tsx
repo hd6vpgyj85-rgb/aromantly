@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { useNavigate } from "react-router-dom";
 import { useCoupons } from "../../contexts/CouponsContext";
 import type { CouponScope, DiscountType } from "../../types";
@@ -35,7 +36,7 @@ export default function CouponFormPage() {
       });
       navigate("/admin/cupones");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo crear el cupón.");
+      setError(getErrorMessage(err, "No se pudo crear el cupón."));
     } finally {
       setIsSaving(false);
     }

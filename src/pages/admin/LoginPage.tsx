@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoyalty } from "../../contexts/LoyaltyContext";
@@ -36,7 +37,7 @@ export default function LoginPage() {
       }
       await signIn(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo iniciar sesión.");
+      setError(getErrorMessage(err, "No se pudo iniciar sesión."));
     } finally {
       setIsSubmitting(false);
     }

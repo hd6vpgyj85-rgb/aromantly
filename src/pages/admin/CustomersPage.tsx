@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 import { useCustomers } from "../../contexts/CustomersContext";
@@ -37,7 +38,7 @@ export default function CustomersPage() {
     try {
       await deleteCustomer(customer.id);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "No se pudo eliminar.");
+      alert(getErrorMessage(err, "No se pudo eliminar."));
     }
   };
 
@@ -189,7 +190,7 @@ function CustomerFormModal({ customer, onClose, onCreate, onUpdate }: CustomerFo
       if (customer) await onUpdate(customer.id, input);
       else await onCreate(input);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo guardar.");
+      setError(getErrorMessage(err, "No se pudo guardar."));
     } finally {
       setIsSaving(false);
     }
@@ -454,7 +455,7 @@ function LoyaltyTiersEditor({ tiers, onCreate, onUpdate, onDelete }: LoyaltyTier
       else await onCreate(input);
       resetForm();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo guardar el nivel.");
+      setError(getErrorMessage(err, "No se pudo guardar el nivel."));
     }
   };
 

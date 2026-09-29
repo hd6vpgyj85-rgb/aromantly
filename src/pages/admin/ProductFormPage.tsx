@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getErrorMessage } from "../../utils/errors";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useProducts } from "../../contexts/ProductsContext";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "../../lib/supabase";
@@ -77,7 +78,7 @@ function ProductFormInner({ product, allProducts }: ProductFormInnerProps) {
 
       setImages((prev) => [...prev, ...uploadedUrls]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudieron subir las imágenes.");
+      setError(getErrorMessage(err, "No se pudieron subir las imágenes."));
     } finally {
       setIsUploading(false);
     }
@@ -138,7 +139,7 @@ function ProductFormInner({ product, allProducts }: ProductFormInnerProps) {
 
       navigate("/admin/productos");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo guardar el producto.");
+      setError(getErrorMessage(err, "No se pudo guardar el producto."));
     } finally {
       setIsSaving(false);
     }
@@ -151,7 +152,7 @@ function ProductFormInner({ product, allProducts }: ProductFormInnerProps) {
       await deleteProduct(product.id);
       navigate("/admin/productos");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo eliminar el producto.");
+      setError(getErrorMessage(err, "No se pudo eliminar el producto."));
     }
   };
 

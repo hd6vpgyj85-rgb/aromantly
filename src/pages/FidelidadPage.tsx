@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { getErrorMessage } from "../utils/errors";
 import { Link, useParams } from "react-router-dom";
 import QRCode from "qrcode";
 import { useLoyalty } from "../contexts/LoyaltyContext";
@@ -68,7 +69,7 @@ export default function FidelidadPage() {
       .catch((err) =>
         setPurchaseState({
           status: "error",
-          message: err instanceof Error ? err.message : "No se pudo registrar la compra.",
+          message: getErrorMessage(err, "No se pudo registrar la compra."),
         })
       );
   }, [token, authLoading, session, addPurchaseByToken]);

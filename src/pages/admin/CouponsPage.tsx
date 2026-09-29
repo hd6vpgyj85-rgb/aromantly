@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { getErrorMessage } from "../../utils/errors";
 import { useCoupons } from "../../contexts/CouponsContext";
 import { formatPrice } from "../../utils/product";
 
@@ -10,7 +11,7 @@ export default function CouponsPage() {
     try {
       await deleteCoupon(code);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "No se pudo eliminar el cupón.");
+      alert(getErrorMessage(err, "No se pudo eliminar el cupón."));
     }
   };
 
