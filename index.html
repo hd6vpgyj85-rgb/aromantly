@@ -5,11 +5,64 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0a0a0a" />
-    <meta name="description" content="Aromantly — Perfumería en Cd. Juárez. Perfumes árabes, de diseñador y de nicho." />
+    <meta name="description" content="Aromantly — Perfumería en Cd. Juárez. Perfumes árabes, de diseñador y de nicho, 100% originales." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aromantly" />
+    <meta property="og:title" content="Aromantly | Perfumería en Cd. Juárez" />
+    <meta property="og:description" content="Perfumes árabes, de diseñador y de nicho, 100% originales, con asesoría personalizada." />
+    <meta property="og:image" content="/images/hero-perfumes.jpg" />
+    <meta property="og:locale" content="es_MX" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <title>Aromantly | Perfumería en Cd. Juárez</title>
+
+    <style>
+      /* Pantalla de carga mientras React arranca: evita el destello en
+         blanco y deja el frasco de la marca respirando. Se quita sola
+         cuando la app monta (ver #root:not(:empty)). */
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0a0a0a;
+        z-index: 9999;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+      }
+
+      #app-splash span {
+        font-family: "Arial Black", Arial, sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 18px;
+        color: #ff7a1a;
+        animation: splash-pulse 1.4s ease-in-out infinite;
+      }
+
+      @keyframes splash-pulse {
+        0%,
+        100% {
+          opacity: 0.35;
+          text-shadow: 0 0 0 rgba(255, 122, 26, 0);
+        }
+        50% {
+          opacity: 1;
+          text-shadow: 0 0 26px rgba(255, 122, 26, 0.65);
+        }
+      }
+
+      #root:not(:empty) + #app-splash {
+        opacity: 0;
+        visibility: hidden;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="app-splash"><span>Aromantly</span></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

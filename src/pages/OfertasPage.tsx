@@ -8,7 +8,7 @@ export default function OfertasPage() {
         tagline: "Precios especiales por tiempo limitado.",
         subtitle: "Aprovecha nuestras fragancias en oferta antes de que se agoten.",
         baseFilter: (p) => !!p.onSale,
-        filterType: "marca",
+        filterTypes: ["marca"],
       }}
     />
   );

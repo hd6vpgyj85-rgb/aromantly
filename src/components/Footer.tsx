@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { getWhatsAppUrl, storeInfo } from "../data/store";
 import "./Footer.css";
 
-export default function Footer() {
+export default function Footer({ plain = false }: { plain?: boolean }) {
   return (
-    <footer className="site-footer">
+    <footer className={`site-footer ${plain ? "site-footer-plain" : ""}`}>
       <div className="container site-footer-content">
         <div className="site-footer-brand">
           <span className="site-footer-logo">Aromantly</span>

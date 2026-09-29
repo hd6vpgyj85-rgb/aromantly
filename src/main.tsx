@@ -12,6 +12,8 @@ import { CustomersProvider } from "./contexts/CustomersContext.tsx";
 import { LoyaltyProvider } from "./contexts/LoyaltyContext.tsx";
 import { CartProvider } from "./contexts/CartContext.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
+import { HomeBannerProvider } from "./contexts/HomeBannerContext.tsx";
+import { LevelImagesProvider } from "./contexts/LevelImagesContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -24,9 +26,13 @@ createRoot(document.getElementById("root")!).render(
                 <CouponsProvider>
                   <CustomersProvider>
                     <LoyaltyProvider>
-                      <CartProvider>
-                        <App />
-                      </CartProvider>
+                      <HomeBannerProvider>
+                        <LevelImagesProvider>
+                          <CartProvider>
+                            <App />
+                          </CartProvider>
+                        </LevelImagesProvider>
+                      </HomeBannerProvider>
                     </LoyaltyProvider>
                   </CustomersProvider>
                 </CouponsProvider>

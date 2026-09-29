@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getErrorMessage } from "../utils/errors";
 import { Link, Navigate } from "react-router-dom";
 import QRCode from "qrcode";
 import { useCart } from "../contexts/CartContext";
@@ -9,6 +10,7 @@ import { useLoyalty } from "../contexts/LoyaltyContext";
 import { getWhatsAppUrl, formatLevels } from "../data/store";
 import { formatPrice } from "../utils/product";
 import { compressImage } from "../utils/image";
+import SpritzBurst from "../components/SpritzBurst";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "../lib/supabase";
 import type { OrderItem } from "../types";
 import "./CheckoutPage.css";
@@ -48,7 +50,7 @@ const INITIAL_FORM: FormState = {
 };
 
 export default function CheckoutPage() {
-  const { lines, subtotal, clearCart } = useCart();
+  const { lines, subtotal, itemCount, clearCart } = useCart();
   const { createOrder } = useOrders();
   const { createReview } = useReviews();
   const { redeemCoupon } = useCoupons();
@@ -82,7 +84,7 @@ export default function CheckoutPage() {
       let appliedCoupon: { code: string; discountType: string; discountValue: number } | null = null;
 
       if (form.couponCode.trim()) {
-        const result = await redeemCoupon(form.couponCode.trim());
+        const result = await redeemCoupon(form.couponCode.trim(), itemCount);
         discount =
           result.discountType === "percentage"
             ? (subtotal * result.discountValue) / 100
@@ -205,7 +207,7 @@ export default function CheckoutPage() {
       clearCart();
       setSuccess({ qrDataUrl, fidelidadUrl });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ocurrió un error al procesar tu pedido.");
+      setError(getErrorMessage(err, "Ocurrió un error al procesar tu pedido."));
     } finally {
       setIsSubmitting(false);
     }
@@ -224,6 +226,9 @@ export default function CheckoutPage() {
 
     return (
       <div className="container checkout-success">
+        <div className="checkout-success-spray" aria-hidden="true">
+          <SpritzBurst />
+        </div>
         <h1>¡Pedido enviado!</h1>
         <p>Abrimos WhatsApp con los detalles de tu pedido. Confirma ahí para coordinar tu entrega y pago.</p>
 

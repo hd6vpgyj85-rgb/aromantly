@@ -8,7 +8,7 @@ export default function EauDeParfumPage() {
         tagline: "Concentración alta, presencia que dura.",
         subtitle: "Fragancias con mayor concentración de esencia y mejor duración.",
         baseFilter: (p) => p.category === "eau de parfum",
-        filterType: "marca",
+        filterTypes: ["marca"],
       }}
     />
   );

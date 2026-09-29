@@ -5,9 +5,9 @@
   --color-border: #262626;
   --color-text: #f5f5f3;
   --color-text-muted: #9a9a95;
-  --color-accent: #7ed321;
-  --color-accent-dark: #64a91b;
-  --color-accent-neon: #97e520;
+  --color-accent: #ff7a1a;
+  --color-accent-dark: #cc5500;
+  --color-accent-neon: #ffab40;
 
   --font-display: "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Helvetica Neue", Arial, sans-serif;
@@ -29,22 +29,50 @@ body {
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Sin el flash gris de iOS al tocar: el feedback lo dan las animaciones. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* El texto seleccionado también lleva la marca. */
+::selection {
+  background: var(--color-accent);
+  color: #0a0a0a;
+}
+
+/* Anillo de foco solo para quien navega con teclado, nunca al hacer clic. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 button {
   font-family: inherit;
   cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease,
+    transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a:active,
+button:not(:disabled):active {
+  transform: scale(0.95);
 }
 
 img {
@@ -68,6 +96,12 @@ h4 {
   text-transform: uppercase;
   letter-spacing: -0.01em;
   margin: 0;
+  /* Reparte las líneas parejo en vez de dejar una palabra suelta abajo. */
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 .btn {
@@ -98,7 +132,7 @@ h4 {
 
 .btn-primary:hover {
   background: var(--color-accent-neon);
-  box-shadow: 0 0 20px rgba(126, 211, 33, 0.4);
+  box-shadow: 0 0 20px rgba(255, 122, 26, 0.4);
 }
 
 .btn-secondary {
@@ -142,4 +176,261 @@ h4 {
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
+
+/* ── Animaciones con temática de perfumería ─────────────── */
+
+/* Estela (sillage): partículas que suben y se desvanecen, como el
+   rastro de una fragancia en el aire. */
+@keyframes sillage-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  15% {
+    opacity: var(--sillage-opacity, 0.5);
+  }
+  70% {
+    opacity: var(--sillage-opacity, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--sillage-drift, 14px), -120px, 0) scale(1.35);
+  }
+}
+
+/* Rociada (spritz): gotitas que salen disparadas en abanico. */
+@keyframes spritz-burst {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spritz-x, 0), var(--spritz-y, -26px)) scale(0.35);
+  }
+}
+
+/* Reflejo que cruza una superficie, como el vidrio de un frasco. */
+@keyframes glass-shine {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-fade-in 0.32s ease both;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-pop {
+  animation: badge-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pulse-feedback {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse-feedback {
+  animation: pulse-feedback 0.3s ease;
+}
+
+/* ── Entradas reutilizables ─────────────────────────────── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+.anim-slide-up {
+  animation: slide-up-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-scale-in {
+  animation: scale-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-pop-in {
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Escalonado genérico para listas y grids ────────────── */
+
+.stagger > * {
+  animation: slide-up-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stagger > *:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.18s;
+}
+.stagger > *:nth-child(7) {
+  animation-delay: 0.21s;
+}
+.stagger > *:nth-child(8) {
+  animation-delay: 0.24s;
+}
+.stagger > *:nth-child(9) {
+  animation-delay: 0.27s;
+}
+.stagger > *:nth-child(10) {
+  animation-delay: 0.3s;
+}
+.stagger > *:nth-child(n + 11) {
+  animation-delay: 0.33s;
+}
+
+/* ── Esqueleto de carga (shimmer) ───────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-alt) 37%,
+    var(--color-surface) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Inputs con transición de foco ──────────────────────── */
+
+input,
+select,
+textarea {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.16);
+}
+
+/* ── Imágenes que aparecen al cargar ────────────────────── */
+
+@keyframes img-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

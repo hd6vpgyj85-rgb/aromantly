@@ -15,26 +15,88 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
+  animation: testimonial-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes testimonial-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .testimonial-image {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--color-surface-alt);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.testimonial-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  animation: fade-in 0.25s ease both;
+}
+
+.testimonial-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.testimonial-preview-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  background: rgba(10, 10, 10, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
 }
 
 .testimonial-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.testimonials-slide:hover .testimonial-image img {
+  transform: scale(1.05);
 }
 
 .testimonial-stars {
   color: var(--color-accent);
   font-size: 16px;
   letter-spacing: 2px;
+  display: flex;
+  gap: 2px;
+}
+
+.testimonial-stars span {
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .star-empty {
@@ -46,6 +108,8 @@
   line-height: 1.6;
   margin: 14px 0;
   color: var(--color-text);
+  animation: slide-up-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.14s;
 }
 
 .testimonial-name {
@@ -54,6 +118,8 @@
   font-weight: 900;
   font-size: 13px;
   text-transform: uppercase;
+  animation: slide-up-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.2s;
 }
 
 .testimonial-level {
@@ -61,6 +127,8 @@
   font-size: 12px;
   color: var(--color-text-muted);
   margin-top: 2px;
+  animation: slide-up-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.26s;
 }
 
 .testimonials-dots {
@@ -70,21 +138,91 @@
   margin-top: 18px;
 }
 
-@media (min-width: 768px) {
-  .testimonials-slide {
-    flex-direction: row;
-    align-items: stretch;
+/* En escritorio la tarjeta de una sola reseña se veía enorme (la foto no
+   tenía una altura fija y crecía a su tamaño original), así que ahí se
+   oculta y se usa el grid compacto de abajo en su lugar. En móvil se ve
+   bien tal cual. */
+.testimonials-grid {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .testimonials-mobile-only {
+    display: none;
   }
 
-  .testimonial-image {
-    width: 45%;
-    aspect-ratio: auto;
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
+}
 
-  .testimonial-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.testimonial-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+  animation: testimonial-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--card-delay, 0s);
+}
+
+.testimonial-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-3px);
+}
+
+.testimonial-card-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface-alt);
+  border: none;
+  padding: 0;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.testimonial-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.testimonial-card:hover .testimonial-card-image img {
+  transform: scale(1.05);
+}
+
+.testimonial-card-quote {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 10px 0;
+  color: var(--color-text);
+}
+
+.testimonial-card-name {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.testimonial-card-level {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-card {
+    animation: none;
   }
 }

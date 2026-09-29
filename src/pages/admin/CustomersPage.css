@@ -24,3 +24,16 @@
 .loyalty-tiers-editor {
   margin-bottom: 24px;
 }
+
+.customer-qr-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+
+.customer-qr-info strong {
+  color: var(--color-text);
+}

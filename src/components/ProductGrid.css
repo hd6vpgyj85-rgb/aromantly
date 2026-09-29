@@ -24,3 +24,38 @@
   text-align: center;
   color: var(--color-text-muted);
 }
+
+/* ── Esqueletos de carga ────────────────────────────────── */
+
+.product-card-skeleton {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.product-card-skeleton-image {
+  aspect-ratio: 1 / 1;
+  border-radius: 0;
+}
+
+.product-card-skeleton-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-card-skeleton-line {
+  height: 12px;
+  width: 100%;
+}
+
+.product-card-skeleton-line-sm {
+  width: 40%;
+  height: 9px;
+}
+
+.product-card-skeleton-line-md {
+  width: 60%;
+}

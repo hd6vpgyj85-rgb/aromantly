@@ -1,0 +1,190 @@
+.promo-banner {
+  display: block;
+  margin: 40px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-banner:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.promo-banner img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+@media (min-width: 640px) {
+  .promo-banner img {
+    aspect-ratio: 21 / 9;
+  }
+}
+
+.promo-banner-carousel-wrapper {
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-banner-carousel-wrapper:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.promo-banner-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.promo-banner-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.promo-banner-carousel img {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.promo-banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 7px;
+  z-index: 2;
+}
+
+.promo-banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 0;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease,
+    border-radius 0.3s ease;
+}
+
+.promo-banner-dot-active {
+  background: var(--color-accent);
+  width: 20px;
+  border-radius: 4px;
+}
+
+/* En escritorio, la imagen única a todo el ancho (o el carrusel de
+   deslizar) se ve deforme y demasiado grande; ahí se usa el coverflow
+   de abajo en su lugar. En móvil se ve bien tal cual, así que solo se
+   oculta a partir de 1024px. */
+.promo-desktop-only {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .promo-mobile-only {
+    display: none;
+  }
+
+  .promo-desktop-only {
+    display: block;
+    margin: 40px 0;
+    /* Ocupa todo el ancho de la pantalla, separado un poco de los bordes
+       (no limitado al ancho del .container como el resto del sitio). */
+    padding: 0 clamp(24px, 5vw, 80px);
+  }
+}
+
+.promo-coverflow {
+  position: relative;
+  width: 100%;
+}
+
+.promo-coverflow-track {
+  position: relative;
+  height: min(30vw, 420px);
+}
+
+.promo-coverflow-slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(26vw, 360px);
+  height: min(26vw, 360px);
+  border: none;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease,
+    border-color 0.25s ease, box-shadow 0.35s ease;
+}
+
+.promo-coverflow-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+}
+
+.promo-coverflow-slide-active {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.promo-coverflow-slide-active:hover {
+  border-color: var(--color-accent);
+}
+
+.promo-coverflow-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-coverflow-arrow:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-neon);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.promo-coverflow-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+.promo-coverflow-arrow-left {
+  left: 0;
+}
+
+.promo-coverflow-arrow-right {
+  right: 0;
+}
+
+.promo-coverflow-dots {
+  position: static;
+  transform: none;
+  justify-content: center;
+  margin-top: 20px;
+}

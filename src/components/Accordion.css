@@ -19,12 +19,23 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  text-align: left;
+  gap: 12px;
+}
+
+.accordion-trigger:hover {
+  color: var(--color-accent-neon);
+}
+
+.accordion-trigger:active {
+  transform: none;
 }
 
 .accordion-chevron {
   font-size: 18px;
-  transition: transform 0.2s ease;
+  line-height: 1;
   color: var(--color-text-muted);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
 }
 
 .accordion-chevron-open {
@@ -32,9 +43,37 @@
   color: var(--color-accent-neon);
 }
 
+/* Animación de alto con grid: 0fr → 1fr permite animar sin saber la altura. */
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.accordion-open .accordion-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
 .accordion-content {
-  padding: 0 0 18px;
+  overflow: hidden;
+  min-height: 0;
   color: var(--color-text-muted);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.accordion-content > * {
+  padding-bottom: 18px;
+}
+
+.accordion-content > *:first-child {
+  padding-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-panel {
+    transition: none;
+  }
 }

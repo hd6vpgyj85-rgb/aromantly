@@ -15,6 +15,13 @@ export default function FeaturedCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hasCentered, setHasCentered] = useState(false);
+  // Mientras un scroll programático (clic en dot/flecha/thumbnail) está en
+  // curso, el evento "scroll" que dispara igual no debe recalcular el
+  // índice activo: si el destino centrado excede el scroll máximo, el
+  // navegador lo recorta al final y el detector de bordes de handleScroll
+  // pisaba el índice ya fijado explícitamente en scrollToIndex.
+  const suppressScrollDetectionRef = useRef(false);
+  const suppressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const featured: Product[] = useMemo(() => pickRandom(products, Math.min(8, products.length)), [products]);
 
@@ -40,6 +47,24 @@ export default function FeaturedCarousel() {
     if (!track) return;
 
     const handleScroll = () => {
+      if (suppressScrollDetectionRef.current) return;
+
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      // En los extremos el padding lateral del track no alcanza a centrar
+      // el primer/último thumbnail (haría falta la mitad del ancho del
+      // viewport de padding), así que "el más cercano al centro" nunca
+      // daba el índice 0 ni el último: se quedaba trabado en el segundo
+      // o el penúltimo. Por eso los extremos del scroll se detectan aparte.
+      if (track.scrollLeft <= 1) {
+        setActiveIndex(0);
+        return;
+      }
+      if (track.scrollLeft >= maxScroll - 1) {
+        setActiveIndex(track.children.length - 1);
+        return;
+      }
+
       const children = Array.from(track.children) as HTMLElement[];
       const center = track.scrollLeft + track.clientWidth / 2;
       let closestIndex = 0;
@@ -62,15 +87,38 @@ export default function FeaturedCarousel() {
     return () => track.removeEventListener("scroll", handleScroll);
   }, [featured]);
 
+  useEffect(() => {
+    return () => {
+      if (suppressTimeoutRef.current) clearTimeout(suppressTimeoutRef.current);
+    };
+  }, []);
+
   const scrollToIndex = (index: number) => {
     const track = trackRef.current;
     if (!track) return;
     const child = track.children[index] as HTMLElement | undefined;
     if (!child) return;
-    track.scrollTo({
-      left: child.offsetLeft - (track.clientWidth - child.offsetWidth) / 2,
-      behavior: "smooth",
-    });
+
+    // Se marca el índice como activo de inmediato (clic manda) y se
+    // ignoran los eventos "scroll" que dispare esta animación: si el
+    // destino centrado excede el scroll máximo del track, el navegador lo
+    // recorta al final y el detector de bordes de handleScroll pisaba este
+    // valor con el último índice en vez del que realmente se clickeó.
+    if (suppressTimeoutRef.current) clearTimeout(suppressTimeoutRef.current);
+    suppressScrollDetectionRef.current = true;
+    setActiveIndex(index);
+
+    // scrollIntoView deja que el navegador calcule el destino real dentro
+    // de los límites del track; el cálculo manual con offsetLeft daba
+    // números negativos o más allá del máximo en pantallas anchas (varios
+    // productos visibles a la vez), y el navegador los recortaba a 0 o al
+    // tope sin avisar, hacía que algunos dots no movieran nada y otros
+    // saltaran de largo sobre varios productos.
+    child.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+
+    suppressTimeoutRef.current = setTimeout(() => {
+      suppressScrollDetectionRef.current = false;
+    }, 600);
   };
 
   const goPrev = () => scrollToIndex(Math.max(0, activeIndex - 1));

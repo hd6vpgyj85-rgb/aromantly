@@ -8,7 +8,7 @@ export default function EauDeToilettePage() {
         tagline: "Frescura ligera para el día a día.",
         subtitle: "Ideales para uso diario, con una proyección suave y agradable.",
         baseFilter: (p) => p.category === "eau de toilette",
-        filterType: "marca",
+        filterTypes: ["marca"],
       }}
     />
   );

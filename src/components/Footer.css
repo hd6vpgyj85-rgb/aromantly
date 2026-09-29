@@ -1,7 +1,14 @@
 .site-footer {
   border-top: 1px solid var(--color-border);
   padding: 32px 0 20px;
-  background: var(--color-surface);
+  background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)),
+    url("/images/tienda-interior.jpg") center/cover no-repeat;
+}
+
+/* Solo el inicio lleva el footer negro sin foto; el resto de páginas
+   conserva la foto de la tienda. */
+.site-footer-plain {
+  background: var(--color-bg);
 }
 
 .site-footer-content {
@@ -31,8 +38,39 @@
   color: var(--color-text-muted);
 }
 
+.site-footer-links a {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.site-footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .site-footer-links a:hover {
   color: var(--color-accent-neon);
+}
+
+.site-footer-links a:hover::after {
+  transform: scaleX(1);
+}
+
+.site-footer-logo {
+  display: inline-block;
+  transition: text-shadow 0.3s ease;
+}
+
+.site-footer-brand:hover .site-footer-logo {
+  text-shadow: 0 0 18px rgba(255, 122, 26, 0.6);
 }
 
 .site-footer-bottom {

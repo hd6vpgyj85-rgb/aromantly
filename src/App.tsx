@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import CartToast from "./components/CartToast";
+import useTabTitleTease from "./hooks/useTabTitleTease";
 
 import HomeLayout from "./layouts/HomeLayout";
 import CategoryLayout from "./layouts/CategoryLayout";
@@ -34,11 +36,15 @@ import ReviewsPage from "./pages/admin/ReviewsPage";
 import CouponsPage from "./pages/admin/CouponsPage";
 import CouponFormPage from "./pages/admin/CouponFormPage";
 import CustomersPage from "./pages/admin/CustomersPage";
+import HomeBannerPage from "./pages/admin/HomeBannerPage";
 
 export default function App() {
+  useTabTitleTease();
+
   return (
     <>
       <ScrollToTop />
+      <CartToast />
       <Routes>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -78,6 +84,7 @@ export default function App() {
           <Route path="cupones" element={<CouponsPage />} />
           <Route path="cupones/nuevo" element={<CouponFormPage />} />
           <Route path="clientes" element={<CustomersPage />} />
+          <Route path="banner" element={<HomeBannerPage />} />
         </Route>
 
         <Route element={<CategoryLayout />}>

@@ -1,0 +1,171 @@
+.cart-toast {
+  position: fixed;
+  left: 50%;
+  /* Arriba del botón flotante de WhatsApp (60px + margen) para no taparlo. */
+  bottom: 96px;
+  z-index: 1001;
+  width: calc(100% - 32px);
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  background: rgba(20, 20, 20, 0.96);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-accent);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 26px rgba(255, 122, 26, 0.18);
+  overflow: hidden;
+  animation: cart-toast-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes cart-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 28px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.cart-toast-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  overflow: visible;
+  background: var(--color-surface-alt);
+}
+
+.cart-toast-thumb img,
+.cart-toast-thumb-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+/* Palomita que brinca sobre la miniatura, como el sello de "listo". */
+.cart-toast-check {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #0a0a0a;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+
+.cart-toast-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cart-toast-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-accent-neon);
+}
+
+.cart-toast-name {
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-toast-price {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.cart-toast-link {
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  background: var(--color-accent);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.cart-toast-link:hover {
+  background: var(--color-accent-neon);
+}
+
+.cart-toast-close {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+}
+
+.cart-toast-close:hover {
+  color: var(--color-text);
+}
+
+/* Barra de tiempo que se vacía: avisa cuánto falta para que se cierre. */
+.cart-toast-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform-origin: left center;
+  animation: cart-toast-timer 3.2s linear both;
+}
+
+@keyframes cart-toast-timer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (min-width: 640px) {
+  .cart-toast {
+    left: auto;
+    right: 24px;
+    transform: none;
+    animation-name: cart-toast-in-desktop;
+  }
+
+  @keyframes cart-toast-in-desktop {
+    from {
+      opacity: 0;
+      transform: translateY(28px) scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}

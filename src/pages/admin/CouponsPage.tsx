@@ -1,9 +1,19 @@
 import { Link } from "react-router-dom";
+import { getErrorMessage } from "../../utils/errors";
 import { useCoupons } from "../../contexts/CouponsContext";
 import { formatPrice } from "../../utils/product";
 
 export default function CouponsPage() {
   const { coupons, toggleActive, deleteCoupon } = useCoupons();
+
+  const handleDelete = async (code: string) => {
+    if (!confirm(`¿Eliminar el cupón ${code}?`)) return;
+    try {
+      await deleteCoupon(code);
+    } catch (err) {
+      alert(getErrorMessage(err, "No se pudo eliminar el cupón."));
+    }
+  };
 
   return (
     <div>
@@ -31,6 +41,9 @@ export default function CouponsPage() {
                 <span className={`admin-badge ${coupon.active ? "admin-badge-green" : "admin-badge-gray"}`}>
                   {coupon.active ? "Activo" : "Inactivo"}
                 </span>
+                <span className="admin-badge admin-badge-gray" style={{ marginLeft: 6 }}>
+                  {coupon.scope === "single_product" ? "Un solo producto" : "Carrito completo"}
+                </span>
               </div>
               <div className="admin-row-card-actions">
                 <button
@@ -43,9 +56,7 @@ export default function CouponsPage() {
                 <button
                   type="button"
                   className="admin-btn-icon admin-btn-danger"
-                  onClick={() => {
-                    if (confirm(`¿Eliminar el cupón ${coupon.code}?`)) deleteCoupon(coupon.code);
-                  }}
+                  onClick={() => handleDelete(coupon.code)}
                 >
                   🗑
                 </button>

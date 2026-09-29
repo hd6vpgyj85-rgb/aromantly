@@ -1,11 +1,15 @@
 import { useState, type FormEvent } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { getErrorMessage } from "../../utils/errors";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLoyalty } from "../../contexts/LoyaltyContext";
 import "./LoginPage.css";
 
 export default function LoginPage() {
   const { session, isLoading, signIn } = useAuth();
+  const { loginCustomer } = useLoyalty();
   const location = useLocation();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,9 +26,18 @@ export default function LoginPage() {
     setError(null);
     setIsSubmitting(true);
     try {
+      // Si el correo/número y la contraseña/código coinciden con un cliente,
+      // entra directo a su tarjeta de fidelidad sin tocar la sesión de
+      // Supabase Auth del admin. Si no coincide con ningún cliente, se
+      // intenta el login normal del admin (correo y contraseña reales).
+      const customerToken = await loginCustomer(email, password);
+      if (customerToken) {
+        navigate(`/fidelidad/${customerToken}`);
+        return;
+      }
       await signIn(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo iniciar sesión.");
+      setError(getErrorMessage(err, "No se pudo iniciar sesión."));
     } finally {
       setIsSubmitting(false);
     }
@@ -35,16 +48,19 @@ export default function LoginPage() {
       <form className="admin-login-form" onSubmit={handleSubmit}>
         <span className="admin-login-logo">Aromantly</span>
         <h1>Panel de administración</h1>
+        <p className="admin-login-hint">
+          ¿Eres cliente? Entra con tu número de WhatsApp y tu código de acceso.
+        </p>
         <input
-          type="email"
-          placeholder="Correo"
+          type="text"
+          placeholder="Correo o número de WhatsApp"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
-          placeholder="Contraseña"
+          placeholder="Contraseña o código de acceso"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}

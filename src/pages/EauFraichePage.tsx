@@ -8,7 +8,7 @@ export default function EauFraichePage() {
         tagline: "La versión más suave y fresca de tu fragancia favorita.",
         subtitle: "Muy baja concentración de esencia, ideal para un refresco ligero.",
         baseFilter: (p) => p.category === "eau fraiche",
-        filterType: "marca",
+        filterTypes: ["marca"],
       }}
     />
   );
