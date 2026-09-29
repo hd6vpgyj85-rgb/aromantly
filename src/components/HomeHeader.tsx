@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import { useProfileLinkTarget } from "../hooks/useProfileLinkTarget";
 import MobileNavOverlay from "./MobileNavOverlay";
 import "./Header.css";
 import "./HomeHeader.css";
@@ -22,6 +23,8 @@ export default function HomeHeader() {
   const { itemCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   useBodyScrollLock(isMenuOpen);
+  const profileTarget = useProfileLinkTarget();
+  const isCustomerCard = profileTarget.startsWith("/fidelidad");
 
   return (
     <header className="site-header home-header">
@@ -77,7 +80,12 @@ export default function HomeHeader() {
               </span>
             )}
           </Link>
-          <Link to="/admin" className="site-header-icon site-header-admin" aria-label="Panel de administración" title="Admin">
+          <Link
+            to={profileTarget}
+            className="site-header-icon site-header-admin"
+            aria-label={isCustomerCard ? "Tu tarjeta de fidelidad" : "Panel de administración"}
+            title={isCustomerCard ? "Mi tarjeta" : "Admin"}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="10" rx="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />

@@ -89,6 +89,8 @@ interface LoyaltyContextValue {
 
   getOrCreateCustomerForCheckout: (name: string, phone: string) => Promise<CustomerToken>;
   getCustomerByToken: (token: string) => Promise<CustomerByToken | null>;
+  /** Suma +1 compra al dueño de este token. Solo la puede llamar un admin con sesión iniciada (ver RLS). */
+  addPurchaseByToken: (token: string) => Promise<{ id: string; name: string; purchasesCount: number }>;
   requestClaim: (token: string, tierId: string) => Promise<void>;
   getClaimsByToken: (token: string) => Promise<LoyaltyClaim[]>;
   /** Devuelve el token de la tarjeta si el WhatsApp + código coinciden, o null si no. */
@@ -214,6 +216,14 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
     } as CustomerByToken;
   }, []);
 
+  const addPurchaseByToken = useCallback(async (token: string) => {
+    const { data, error } = await supabase.rpc("add_loyalty_purchase_by_token", { p_token: token });
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row) throw new Error("No se pudo registrar la compra.");
+    return { id: row.id, name: row.name, purchasesCount: row.purchases_count };
+  }, []);
+
   const loginCustomer = useCallback(async (phone: string, code: string): Promise<string | null> => {
     const { data, error } = await supabase.rpc("authenticate_customer_by_code", {
       p_phone: phone,
@@ -259,6 +269,7 @@ export function LoyaltyProvider({ children }: { children: ReactNode }) {
         revertClaim,
         getOrCreateCustomerForCheckout,
         getCustomerByToken,
+        addPurchaseByToken,
         requestClaim,
         getClaimsByToken,
         loginCustomer,

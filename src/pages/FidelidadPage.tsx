@@ -2,8 +2,15 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Poin
 import { Link, useParams } from "react-router-dom";
 import QRCode from "qrcode";
 import { useLoyalty } from "../contexts/LoyaltyContext";
+import { useAuth } from "../contexts/AuthContext";
 import { getWhatsAppUrl } from "../data/store";
+import { saveCustomerToken } from "../utils/customerToken";
 import "./FidelidadPage.css";
+
+type PurchaseState =
+  | { status: "idle" | "registering" }
+  | { status: "success"; name: string; purchasesCount: number }
+  | { status: "error"; message: string };
 
 interface CustomerData {
   id: string;
@@ -21,14 +28,24 @@ interface ClaimData {
 
 export default function FidelidadPage() {
   const { token } = useParams<{ token: string }>();
-  const { tiers, isLoading: tiersLoading, getCustomerByToken, getClaimsByToken, requestClaim } = useLoyalty();
+  const {
+    tiers,
+    isLoading: tiersLoading,
+    getCustomerByToken,
+    addPurchaseByToken,
+    getClaimsByToken,
+    requestClaim,
+  } = useLoyalty();
+  const { session, isLoading: authLoading } = useAuth();
 
   const [customer, setCustomer] = useState<CustomerData | null | undefined>(undefined);
   const [claims, setClaims] = useState<ClaimData[]>([]);
   const [isRequesting, setIsRequesting] = useState<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [purchaseState, setPurchaseState] = useState<PurchaseState>({ status: "idle" });
   const flipStartRef = useRef<{ x: number; y: number } | null>(null);
+  const hasAttemptedPurchaseRef = useRef(false);
 
   const loadClaims = useCallback(async () => {
     if (!token) return;
@@ -36,11 +53,36 @@ export default function FidelidadPage() {
     setClaims(data.map((c) => ({ tierId: c.tierId, claimed: c.claimed, couponCode: c.couponCode, requestedAt: c.requestedAt })));
   }, [token, getClaimsByToken]);
 
+  // Quien toca este link tiene sesión de admin abierta en su celular: es el
+  // dueño escaneando el NFC del cliente, no el cliente viendo su tarjeta.
+  // Se suma la compra una sola vez por visita (el ref evita un doble
+  // conteo si el efecto se vuelve a disparar).
   useEffect(() => {
-    if (!token) return;
-    getCustomerByToken(token).then((result) => setCustomer(result));
+    if (!token || authLoading || !session) return;
+    if (hasAttemptedPurchaseRef.current) return;
+    hasAttemptedPurchaseRef.current = true;
+
+    setPurchaseState({ status: "registering" });
+    addPurchaseByToken(token)
+      .then((result) => setPurchaseState({ status: "success", name: result.name, purchasesCount: result.purchasesCount }))
+      .catch((err) =>
+        setPurchaseState({
+          status: "error",
+          message: err instanceof Error ? err.message : "No se pudo registrar la compra.",
+        })
+      );
+  }, [token, authLoading, session, addPurchaseByToken]);
+
+  // Flujo normal de cliente: solo corre si NO hay sesión de admin, para no
+  // pisar la rama de arriba ni pedir datos de más mientras el dueño escanea.
+  useEffect(() => {
+    if (!token || authLoading || session) return;
+    getCustomerByToken(token).then((result) => {
+      setCustomer(result);
+      if (result) saveCustomerToken(token);
+    });
     loadClaims();
-  }, [token, getCustomerByToken, loadClaims]);
+  }, [token, authLoading, session, getCustomerByToken, loadClaims]);
 
   useEffect(() => {
     if (!token) return;
@@ -73,6 +115,63 @@ export default function FidelidadPage() {
       setIsFlipped((v) => !v);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="fidelidad-page">
+        <FidelidadTopBar />
+        <div className="container fidelidad-loading">Cargando…</div>
+      </div>
+    );
+  }
+
+  // El dueño tocó el NFC del cliente con su celular (sesión de admin
+  // activa): en vez de la tarjeta, se registra la compra y se confirma.
+  if (session) {
+    if (purchaseState.status === "success") {
+      return (
+        <div className="fidelidad-page">
+          <FidelidadTopBar />
+          <div className="container fidelidad-purchase-result">
+            <div className="fidelidad-purchase-check" aria-hidden="true">
+              ✓
+            </div>
+            <h1>¡Compra registrada!</h1>
+            <p className="fidelidad-purchase-name">{purchaseState.name}</p>
+            <p className="fidelidad-purchase-count">{purchaseState.purchasesCount} compras totales</p>
+            <Link to="/" className="btn btn-primary">
+              Volver al inicio
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
+    if (purchaseState.status === "error") {
+      return (
+        <div className="fidelidad-page">
+          <FidelidadTopBar />
+          <div className="container fidelidad-purchase-result">
+            <div className="fidelidad-purchase-error-icon" aria-hidden="true">
+              ✕
+            </div>
+            <h1>No se pudo registrar la compra</h1>
+            <p className="fidelidad-purchase-name">{purchaseState.message}</p>
+            <Link to="/" className="btn btn-primary">
+              Volver al inicio
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="fidelidad-page">
+        <FidelidadTopBar />
+        <div className="container fidelidad-loading">Registrando compra…</div>
+      </div>
+    );
+  }
 
   if (customer === undefined || tiersLoading) {
     return (

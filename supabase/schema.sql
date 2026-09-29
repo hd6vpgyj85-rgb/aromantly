@@ -579,6 +579,47 @@ $$;
 
 grant execute on function revert_loyalty_claim(uuid) to authenticated;
 
+-- Suma una compra al cliente dueño de este token de tarjeta de fidelidad.
+-- Pensada para el flujo de NFC: el mismo link/token de /fidelidad/:token que
+-- ve el cliente se graba en su llavero físico; cuando quien lo toca tiene
+-- sesión de admin abierta, el frontend llama a esta función en vez de
+-- mostrar la tarjeta. Solo "authenticated" puede ejecutarla (ver el revoke
+-- de abajo), así que un cliente anónimo jamás puede sumarse compras
+-- tocando su propio llavero, aunque conozca su token.
+drop function if exists add_loyalty_purchase_by_token(text);
+
+create or replace function add_loyalty_purchase_by_token(p_token text)
+returns table(id uuid, name text, purchases_count integer)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_customer_id uuid;
+begin
+  -- Reusa get_customer_by_token para resolver el cliente sin duplicar su
+  -- lógica ni depender del nombre exacto de la columna del token.
+  select gcbt.id into v_customer_id from get_customer_by_token(p_token) as gcbt;
+
+  if v_customer_id is null then
+    raise exception 'CLIENTE_NO_ENCONTRADO';
+  end if;
+
+  -- El alias "c" es necesario: returns table(..., purchases_count ...)
+  -- declara "purchases_count" como variable de salida, y sin calificar con
+  -- el alias de la tabla, Postgres no sabe si es esa variable o la columna
+  -- ("column reference purchases_count is ambiguous").
+  return query
+    update customers as c
+      set purchases_count = c.purchases_count + 1
+      where c.id = v_customer_id
+      returning c.id, c.name, c.purchases_count;
+end;
+$$;
+
+revoke all on function add_loyalty_purchase_by_token(text) from public;
+grant execute on function add_loyalty_purchase_by_token(text) to authenticated;
+
 -- ───────────────────────────────────────────────────────────────────
 -- STORAGE: bucket público para imágenes de productos y reseñas
 -- ───────────────────────────────────────────────────────────────────
